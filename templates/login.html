@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+
+{% block body %}
+{% load static %}
+<div style="height: 70vh;">
+<div class="container">
+    <h2>Login</h2>
+    <form method="post" action="{% url 'signin' %}" enctype="multipart/form-data">
+        {% csrf_token %} <!-- Include CSRF token for form submission -->
+
+        
+
+
+        <input  type="text" name="username" placeholder="Your Username" maxlength="20" required>
+        <input type="password" name="password" placeholder="Your Password" maxlength="20" required>
+        <input type="submit" value="Login">
+    </form>
+    <div class="oauth-buttons">
+        <p>Or Login with:</p>
+        <a href="#"><img src="{% static 'images/google.png' %}" alt="Login with Google"></a> <!-- Link to your Google image -->
+    </div>
+</div>
+</div>
+{% endblock body %}

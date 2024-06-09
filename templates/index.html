@@ -1,0 +1,96 @@
+{% extends 'base.html' %}
+
+{% block body %}
+
+
+
+<section class=" firstsection" id="Home">
+
+  {% load static %}
+  <div class="home-box">
+    <div class="main-text-box">
+      <div class="center-box">
+        <div class="heading">
+          <h1>Learn. Cook. Share.</h1>
+          <h1>Cooking Made Easy.</h1>
+        </div>
+        <p class="typing-effect">Say good bye to long and frustrating<br>
+          food blogs and recipe videos. Access
+          <br> our recipe cards to prepare any dish<br>
+          in minutes.
+        </p>
+
+        <Button style="height: 46px; width: 187px;" onclick="location.href='{% url 'Recipespage' %}'" id="signupbutton"
+          class="btn">Browse Recipes</Button>
+
+      </div>
+    </div>
+    <div class="rotate-img-box">
+      <div class="img-box">
+        <img src="{% static '/images/rotatingimage.png' %}" class="rotate" />
+      </div>
+    </div>
+  </div>
+
+
+</section>
+
+<h1 class="text">Our Top Picks </h1>
+<!-- Excepteur sint occaecat cupidatat non qui proident, sunt culpa qui officia deserunmollit anim id est laborum.</h2> -->
+<section class="top-picks-main">
+
+
+  <div class="top-picks-sub">
+    <div class="top-picks-recipes">
+      <h2 style="margin-top: -25%; position: absolute;">Top Recipes</h2>
+      <div class="recipebox">
+
+        <a href="" class="recipe-link">
+          <div class="img-container" style="background-image:">
+
+            <!-- {% if item.is_favorited%} -->
+            <button class="addto-favorite-button" style="background-color: #ff002d;"
+              onclick="event.stopPropagation(); location.href=''; return false;">&hearts;</button>
+
+            <!-- {% else %} -->
+            <button class="addto-favorite-button"
+              onclick="event.stopPropagation(); location.href=''; return false;  ">&hearts;</button>
+            <!-- 
+                    {% endif %} -->
+
+          </div>
+
+          <div class="title-container">
+            <h3><b>Dakshdhs</b></h3><br>
+            <div class="ratingdiv">4.5<i class="fa fa-star" style="color: #FFD43B;"></i>/5</div>
+
+
+          </div>
+          <!-- <div class="chefname-container">By:<i> {{ item.recipe.user }}</i></div> -->
+      </div>
+
+    </div>
+
+    <div class="top-picks-chefs">
+      <a href="" class="recipe-link">
+        <div class="chefs-box">
+          <div class="chefs-img-box">
+            <div class="chefs-img" style="background-image:jjkn ;">
+            </div>
+          </div>
+          <div class="chefs-name">
+
+            <h2>hwloo</h2>
+
+          </div>
+        </div>
+      </a>
+    </div>
+  </div>
+
+
+</section>
+
+
+
+{% endblock body %}

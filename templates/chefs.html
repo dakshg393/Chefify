@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+
+
+{% block body %}
+
+<div class="chefs-page">
+  <div class="chef-page-main-box">
+  <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+
+    <h1 style="margin: 0;">Chefs:All()</h1>
+    <button onclick="toggleSortBar()" style="margin-left: auto;width: 30%;">Sort By</button>
+
+    <div id="sort-bar" class="sort-bar">
+        
+        <div class="sort-bar-element">
+            <b><a style="text-decoration:none;color: white;" href="?sort=rating_low_to_high">Rating (Low to
+                    High)</a><b><br>
+        </div>
+        <div class="sort-bar-element">
+            <b><a style="text-decoration:none;color: white;" href="?sort=rating_high_to_low">Rating (High to
+                    Low)</a><b><br>
+        </div>
+        
+    </div>
+
+</div>
+  <div class="chefs-main">
+    {% for chefs in chefs %}
+    <a href="{% url 'chefs_profile' chefs.username %}" class="recipe-link">
+      <div class="chefs-box">
+        <div class="chefs-img-box">
+          <div class="chefs-img"
+            style="background-image: url('{{ MEDIA_URL }}{{ chefs.chef_image.url }}');">
+          </div>
+        </div>
+        <div class="chefs-name">
+
+          <h2>{{ chefs.username }}</h2>
+
+        </div>
+      </div>
+    </a>
+    {% endfor %}
+  </div>
+</div>
+
+</div>
+
+<script>
+  function toggleSortBar() {
+      let sortBar = document.getElementById("sort-bar");
+      if (sortBar.style.display === "block") {
+          sortBar.style.display = "none";
+      } else {
+          sortBar.style.display = "block";
+      }
+  }
+</script>
+{% endblock body %}

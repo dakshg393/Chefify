@@ -1,0 +1,89 @@
+{% extends 'base.html' %}
+
+
+{% block body %}
+
+
+
+
+<div class="chefs-profile">
+    <div class="chefs-main-box">
+      <div class=chefs-profile-img-box>
+        <img src="{{ chefdetails.chef_image.url }}"  style=" width:50%; height:70% ;   border-radius: 10%;">
+      </div>
+       <div class=chefs-detail-box>
+          <h1 style="text-transform: capitalize;">{{ chefdetails.name }}</h1>
+          <h2>@{{ chefdetails.username }}</h2>
+          <p>{{ chefdetails.description }} </p>
+
+
+      </div>
+   
+    </div>
+  </div>
+
+
+
+<div class="recipe-page">
+
+   
+  <div class="filternavbar" style="align-items: center;">
+    <h1>Filter By</h1>
+    <form action="" method="post">
+        {% csrf_token %}
+        <h2>Category</h2>
+        <input  type="checkbox" id="breakfast" name="category" value="Breakfast">
+        <label  class="sortednavbar-label" for="breakfast">Breakfast</label><br>
+        <input type="checkbox" id="lunch" name="category" value="Lunch">
+        <label class="sortednavbar-label" for="lunch">Lunch</label><br>
+        <input type="checkbox" id="dinner" name="category" value="Dinner">
+        <label  class="sortednavbar-label"for="dinner">Dinner</label><br>
+        
+        <h2>Time</h2>
+        <input type="time" id="time" name="time"><br>
+        
+        <h2>Difficulty</h2>
+
+        <input type="radio" id="easy" name="difficulty" value="Easy">
+        <label class="sortednavbar-label" for="easy">Easy</label><br>
+        <input type="radio" id="medium" name="difficulty" value="Medium">
+        <label class="sortednavbar-label" for="medium">Medium</label><br>
+        <input type="radio" id="hard" name="difficulty" value="Hard">
+        <label class="sortednavbar-label" for="hard">Hard</label>
+        <br><br>
+        
+       
+        
+        <button type="submit">Submit</button>
+        <br>
+    </form>
+</div>
+
+
+
+    <div class="recipeBoxcontainer">
+
+        {% if recipe %}
+        {% for recipe in recipe %}
+
+        <div class="recipebox">
+
+            <a href="{% url 'recipe_detail' recipe.pk %}" class="recipe-link">
+                <div class="img-container"
+                    style="background-image: url('{{ MEDIA_URL }}{{ recipe.recipe_image.url }}');">
+                    <button class="addto-favorite-button" onclick="event.stopPropagation(); location.href='{% url 'signuppage' %}'; return false;"><i class='fas fa-pencil-alt'></i></button>
+                </div>
+                <div class="title-container"><h3><b>{{ recipe.title }}{{ recipe.created_at}}</b></h3></div>
+                <div class="chefname-container">By:<i> {{ recipe.user }}</i></div>
+        </div>
+        </a>
+        {% endfor %}
+        {% else %}
+            <h1>No recipes</h1>
+        {% endif %}
+
+    </div>
+</div>
+
+
+{% endblock body %}

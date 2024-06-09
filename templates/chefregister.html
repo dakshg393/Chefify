@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+
+
+{% block body %}
+
+<div class="" style="margin: 60px; box-shadow: 0px 0px 20px 0px #000000; border: 2px aqua;" id="myForm">
+    <form class="form-container" action="{% url 'chefregister' %}" method="POST" enctype="multipart/form-data">
+        {% csrf_token %} <!-- Include CSRF token for form submission -->
+        
+        <h2>Register as A Chef</h2>
+        <label for="chef_image">Profileimage:</label>
+        <input type="file" id="chef_image" name="chef_image" required>
+        <br>
+        <br>
+        <label for="firstname">Firstname:</label>
+        <input type="text" id="name" name="name" maxlength="50" value="{{ request.user.first_name }} {{ request.user.last_name }}" readonly >
+        <br>
+       
+        <label for="username">Username:</label>
+        <input type="text" id="username" name="username" maxlength="50"  value="{{request.user.username}}"  readonly>
+        <br>
+        <label for="description">Description:</label>
+        <textarea id="description" name="description" maxlength="800" required></textarea>
+        <br>
+        <label for="tags">Tags:</label>
+        <input type="text" id="tags" name="tags" maxlength="50" required>
+        <br>
+
+        <input type="submit" value="Submit">
+    </form>
+</div>
+
+{% endblock body %}

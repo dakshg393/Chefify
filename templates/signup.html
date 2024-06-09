@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+
+
+{% block body %}
+
+<form class="signup-form" method="post" action="{% url 'signup' %}" enctype="multipart/form-data">
+    {% csrf_token %}
+    <h1>Sign Up</h1>
+    <div class="form-group">
+        <label for="name">FirstName:</label>
+        <input  pattern="[a-zA-Z]+"  oninvalid="this.setCustomValidity('This field accepts only alphabetic characters.')" oninput="this.setCustomValidity('')"  type="text" id="first_name" name="first_name" class="signup-name" pattern="[A-Za-z]+" maxlength="20" required>
+    </div>
+
+    <div class="form-group">
+        <label for="name">LastName:</label>
+        <input  pattern="[a-zA-Z]+" oninvalid="this.setCustomValidity('This field accepts only alphabetic characters.')" oninput="this.setCustomValidity('')"  type="text" id="username" name="last_name" class="signup-name" maxlength="20" required>
+    </div>
+
+    <div class="form-group">
+        <label for="name">UserName:</label>
+        <input type="text" id="username" name="username" class="signup-name" maxlength="20" required>
+    </div>
+    <div class="form-group">
+        <label for="email">Email:</label>
+        <input type="email" id="email" name="email" class="signup-email"  required>
+    </div>
+    <div class="form-group">
+        <label for="password">Password:</label>
+        <input  type="password" id="password" name="password" class="signup-password" required>
+    </div>
+    <button type="submit">Sign Up</button>
+</form>
+
+{% endblock body %}
