@@ -7,83 +7,224 @@
 
 
 <div class="chefs-profile">
-    <div class="chefs-main-box">
-      <div class=chefs-profile-img-box>
-        <img src="{{ chefdetails.chef_image.url }}"  style=" width:50%; height:70% ;   border-radius: 10%;">
-      </div>
-       <div class=chefs-detail-box>
-          <h1 style="text-transform: capitalize;">{{ chefdetails.name }}</h1>
-          <h2>@{{ chefdetails.username }}</h2>
-          <p>{{ chefdetails.description }} </p>
-
-
-      </div>
-   
+  <div class="chefs-main-box">
+    <div class=chefs-profile-img-box>
+      <img src="{{ chefdetails.chef_image.url }}" style=" width:80%; height:80% ;   border-radius: 10%;">
     </div>
+    <div class=chefs-detail-box>
+      <h2 style="text-transform: capitalize;">{{ chefdetails.name }}</h2>
+      <h3>@{{ chefdetails.username }}</h3>
+      <p>{{ chefdetails.description }} </p>
+
+      {% if chefrating %}
+      <!-- Display star rating -->
+      <div id="star-rating" class="star-rating" style="display: block;">
+        <span style="font-size: large;" class="fa fa-star{% if chefrating.rating >= 1 %} checked {% endif %}"></span>
+        <span style="font-size: large;" class="fa fa-star{% if chefrating.rating >= 2 %} checked {% endif %}"></span>
+        <span style="font-size: large;" class="fa fa-star{% if chefrating.rating >= 3 %} checked {% endif %}"></span>
+        <span style="font-size: large;" class="fa fa-star{% if chefrating.rating >= 4 %} checked {% endif %}"></span>
+        <span style="font-size: large;" class="fa fa-star{% if chefrating.rating >= 5 %} checked {% endif %}"></span>
+        <button id="edit-rating-btn" style="width: 86px; padding: 0%;height: 30px;" onclick="toggleRatingForm()">Edit
+          Rating</button>
+      </div>
+      {% endif %}
+
+      {% if not chefrating %}
+      <form id="rating-form" method="POST" action="" style="display: block;">
+        {% csrf_token %}
+        <input type="hidden" name="form_type" value="rating_form">
+        <div class="star-rating">
+          <input type="radio" id="star5" name="rating" value="5">
+          <label for="star5">★</label>
+          <input type="radio" id="star4" name="rating" value="4">
+          <label for="star4">★</label>
+          <input type="radio" id="star3" name="rating" value="3">
+          <label for="star3">★</label>
+          <input type="radio" id="star2" name="rating" value="2">
+          <label for="star2">★</label>
+          <input type="radio" id="star1" name="rating" value="1">
+          <label for="star1">★</label>
+        </div>
+        <button style="width: 86px; padding: 0%;height: 30px;" type="submit">Submit Rating</button>
+      </form>
+      {% endif %}
+      <form id="rating-form" method="POST" action="" style="display: none;">
+        {% csrf_token %}
+        <input type="hidden" name="form_type" value="rating_form">
+        <div class="star-rating">
+          <input type="radio" id="star5" name="rating" value="5">
+          <label for="star5">★</label>
+          <input type="radio" id="star4" name="rating" value="4">
+          <label for="star4">★</label>
+          <input type="radio" id="star3" name="rating" value="3">
+          <label for="star3">★</label>
+          <input type="radio" id="star2" name="rating" value="2">
+          <label for="star2">★</label>
+          <input type="radio" id="star1" name="rating" value="1">
+          <label for="star1">★</label>
+        </div>
+        <button style="width: 86px; padding: 0%;height: 30px;" type="submit">Submit Rating</button>
+      </form>
+    </div>
+
+
   </div>
+</div>
 
 
 
 <div class="recipe-page">
-
-   
-  <div class="filternavbar" style="align-items: center;">
-    <h1>Filter By</h1>
-    <form action="" method="post">
+  <div class="filternavbar">
+    <a href="#" onclick="displayFilterForm()">
+      <h1>Filter By <i class="fas fa-angle-down" style="font-size:24px"></i></h1>
+    </a>
+    <div class="filterform" id="filterform">
+      <form action="{% url 'Recipespage' %}" method="POST" enctype="multipart/form-data">
         {% csrf_token %}
         <h2>Category</h2>
-        <input  type="checkbox" id="breakfast" name="category" value="Breakfast">
-        <label  class="sortednavbar-label" for="breakfast">Breakfast</label><br>
-        <input type="checkbox" id="lunch" name="category" value="Lunch">
-        <label class="sortednavbar-label" for="lunch">Lunch</label><br>
-        <input type="checkbox" id="dinner" name="category" value="Dinner">
-        <label  class="sortednavbar-label"for="dinner">Dinner</label><br>
-        
+        <input type="checkbox" name="category" value="North_Indian">
+        <label class="sortednavbar-label" for="North_Indian">North Indian</label><br>
+        <input type="checkbox" name="category" value="South_Indian">
+        <label class="sortednavbar-label" for="South_Indian">South Indian</label><br>
+        <input type="checkbox" name="category" value="Fast_Food">
+        <label class="sortednavbar-label" for="Fast_Food">Fast Food</label><br>
+        <input type="checkbox" name="category" value="Drinks_Juices">
+        <label class="sortednavbar-label" for="Drinks_Juices">Drinks & Juices</label><br>
+        <input type="checkbox" name="category" value="International_Cuisine">
+        <label class="sortednavbar-label" for="International_Cuisine">International Cuisine</label><br>
+        <input type="checkbox" name="category" value="Healthy_Diet">
+        <label class="sortednavbar-label" for="Healthy_Diet">Healthy & Diet</label><br>
+        <input type="checkbox" name="category" value="Desserts_Sweets">
+        <label class="sortednavbar-label" for="Desserts_Sweets">Desserts & Sweets</label><br>
+
+
+
         <h2>Time</h2>
-        <input type="time" id="time" name="time"><br>
-        
+        <input type="number" id="time" name="time" min="0" max="60"><br>
+
         <h2>Difficulty</h2>
-
-        <input type="radio" id="easy" name="difficulty" value="Easy">
+        <input type="radio" id="easy" name="difficulty" value="easy">
         <label class="sortednavbar-label" for="easy">Easy</label><br>
-        <input type="radio" id="medium" name="difficulty" value="Medium">
+        <input type="radio" id="medium" name="difficulty" value="medium">
         <label class="sortednavbar-label" for="medium">Medium</label><br>
-        <input type="radio" id="hard" name="difficulty" value="Hard">
-        <label class="sortednavbar-label" for="hard">Hard</label>
-        <br><br>
-        
-       
-        
-        <button type="submit">Submit</button>
-        <br>
-    </form>
-</div>
+        <input type="radio" id="hard" name="difficulty" value="hard">
+        <label class="sortednavbar-label" for="hard">Hard</label><br><br>
 
+        <button type="submit">Submit</button><br>
+      </form>
+    </div>
+  </div>
 
+  <div class="recipeBoxcontainer">
+    <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+      <h1 style="margin: 0;">{{ heading }}</h1>
+      <button onclick="toggleSortBar()" style="margin-left: auto;width: 30%;">Sort By</button>
 
-    <div class="recipeBoxcontainer">
-
-        {% if recipe %}
-        {% for recipe in recipe %}
-
-        <div class="recipebox">
-
-            <a href="{% url 'recipe_detail' recipe.pk %}" class="recipe-link">
-                <div class="img-container"
-                    style="background-image: url('{{ MEDIA_URL }}{{ recipe.recipe_image.url }}');">
-                    <button class="addto-favorite-button" onclick="event.stopPropagation(); location.href='{% url 'signuppage' %}'; return false;"><i class='fas fa-pencil-alt'></i></button>
-                </div>
-                <div class="title-container"><h3><b>{{ recipe.title }}{{ recipe.created_at}}</b></h3></div>
-                <div class="chefname-container">By:<i> {{ recipe.user }}</i></div>
+      <div id="sort-bar" class="sort-bar">
+        <div class="sort-bar-element">
+          <b><a style="text-decoration:none; color: white;" href="?sort=new_to_old">New to Old
+              Recipes</a></b><br>
         </div>
+        <div class="sort-bar-element">
+          <b><a style="text-decoration:none;color: white;" href="?sort=old_to_new">Old to New
+              Recipes</a></b><br>
+        </div>
+        <div class="sort-bar-element">
+          <b><a style="text-decoration:none;color: white;" href="?sort=rating_low_to_high">Rating (Low to
+              High)</a></b><br>
+        </div>
+        <div class="sort-bar-element">
+          <b><a style="text-decoration:none;color: white;" href="?sort=rating_high_to_low">Rating (High to
+              Low)</a></b><br>
+        </div>
+        <div class="sort-bar-element">
+          <b><a style="text-decoration:none;color: white;" href="?sort=time_low_to_high">Time (Low to
+              High)</a></b><br>
+        </div>
+        <div class="sort-bar-element">
+          <b><a style="text-decoration:none;color: white;" href="?sort=time_high_to_low">Time (High to
+              Low)</a></b><br>
+        </div>
+      </div>
+    </div>
+
+    <div class="sub-recipe-box">
+      {% if allrecipesWithReating %}
+      {% for item in allrecipesWithReating %}
+      <div class="recipebox">
+        <a href="{% url 'recipe_detail' item.recipe.pk %}" class="recipe-link">
+          <div class="img-container"
+            style="background-image: url('{{ MEDIA_URL }}{{ item.recipe.recipe_image.url }}');">
+            {% if item.is_favorited %}
+            <button class="addto-favorite-button" style="background-color: #ff002d;"
+              onclick="event.stopPropagation(); location.href='{% url 'add_favorite' item.recipe.pk %}'; return false;">&hearts;</button>
+            {% else %}
+            <button class="addto-favorite-button" style="background-color: #ffffff; color: black;"
+              onclick="event.stopPropagation(); location.href='{% url 'add_favorite' item.recipe.pk %}'; return false;">&hearts;</button>
+            {% endif %}
+          </div>
+          <div class="title-container">
+            <h3><b>{{ item.recipe.title }}</b></h3><br>
+            {% if item.average_rating != 0 %}
+            <div class="ratingdiv">{{ item.average_rating|floatformat:2 }} <i class="fa fa-star"
+                style="color: #FFD43B;"></i>/5</div>
+            {% endif %}
+          </div>
+          <!-- <div class="chefname-container">By:<i> {{ item.recipe.user }}</i></div> -->
         </a>
-        {% endfor %}
-        {% else %}
-            <h1>No recipes</h1>
+      </div>
+      {% endfor %}
+      {% else %}
+      <h1>No recipes</h1>
+      {% endif %}
+    </div>
+
+
+
+
+
+
+    <div class="pagination">
+      <span class="step-links">
+        {% if allrecipesWithReating.has_previous %}
+        <a class="paginstion-element"
+          href="?page=1{% if request.GET.sort %}&sort={{ request.GET.sort }}{% endif %}">&laquo; first</a>
+        <a class="paginstion-element"
+          href="?page={{ allrecipesWithReating.previous_page_number }}{% if request.GET.sort %}&sort={{ request.GET.sort }}{% endif %}">previous</a>
         {% endif %}
 
+        <span class="current">
+          Page {{ allrecipesWithReating.number }} of {{ allrecipesWithReating.paginator.num_pages }}.
+        </span>
+
+        {% if allrecipesWithReating.has_next %}
+        <a class="paginstion-element"
+          href="?page={{ allrecipesWithReating.next_page_number }}{% if request.GET.sort %}&sort={{ request.GET.sort }}{% endif %}">next</a>
+        <a class="paginstion-element"
+          href="?page={{ allrecipesWithReating.paginator.num_pages }}{% if request.GET.sort %}&sort={{ request.GET.sort }}{% endif %}">last
+          &raquo;</a>
+        {% endif %}
+      </span>
     </div>
+
+
+
+  </div>
 </div>
 
+<script>
+  function toggleRatingForm() {
+
+    document.getElementById('star-rating').style.display = "None";
+    document.getElementById('rating-form').style.display = 'Block';
+  }
+
+  function displayFilterForm() {
+
+    let filterform = document.getElementById("filterform");
+    filterform.style.display = filterform.style.display === "none" ? "block" : "none";
+  }
+
+</script>
 
 {% endblock body %}

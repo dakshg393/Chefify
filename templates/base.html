@@ -6,11 +6,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     {% load static %}
     <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}">
-    <link rel="stylesheet" type="text/css" href="responsive.css">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/responsive.css' %}">
     <script src="{% static '/js/index.js' %}"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
-
 
     <title> {% block title %} {% endblock title %} Chefify</title>
 </head>
@@ -19,63 +18,77 @@
 
 <body>
     <nav class="navbar background h-nav-resp">
-        <div class="leftnav v-class-resp">
-            <div class="logo"> <img src="logo.jpeg" alt="logo"></div>
+        <div class="leftnav v-class-resp" id="leftnav">
+
+            <a href="{% url 'home' %}"><div class="logo"> <img src="{% static '/images/logo.jpeg' %}" alt="logo"></div></a>
             <input type="text" name="search" id="search" class="search">
 
         </div>
         <b>
-            <ul class="nav-list v-class-resp">
-                <li><a href="{% url 'home' %}">Home</a></li>
-                <li><a href="{% url 'Recipespage' %}">Recipes</a></li>
-                <li><a href="{% url 'Chefspage' %}">Chefs</a></li>
-                <li><a href="{% url 'Occasionspage' %}">Top &nbsp Picks</a></li>
-                <li><a href="{% url 'aboutpage' %}">About</a></li>
-                {% if request.user.is_authenticated %}
-
-                <li><Button onclick="location.href='{% url 'createrecipeform' %}'" id="signupbutton" class="btn">Create</Button>
-                </li>
-                
-
-
-                <li><button onclick="toggleTheme()" id="lightdarkbutton" class="btn"><i id="toggleicon"
-                            class="fa fa-moon-o"></i></button></li>
-
-                <li><Button style="    height: 40px;width: 40px; border-radius: 50%;" onclick="logoutbar()"
-                        id="signupbutton" class="btn"><i style='font-size:20px;color:white' class='fas'>&#xf406;</i></Button>
-                </li>
-                <div id="logout-bar" class="logout-bar">
-                    <div class="sort-bar-element">
-                        <b><a style="text-decoration:none;color: white;" href="{% url 'logout' %}">My
-                                Profile</a></b><br>
+            <div class="right-nav-div">
+                <ul class="nav-list v-class-resp">
+                    <div class="nav-list-div" id="nav-list-div">
+                        <li><a href="{% url 'home' %}">Home</a></li>
+                        <li><a href="{% url 'Recipespage' %}">Recipes</a></li>
+                        <li><a href="{% url 'Chefspage' %}">Chefs</a></li>
+                        <li><a href="{% url 'home' %}#top-recipe-box-main">Top &nbsp Picks</a></li>
+                        <li><a href="{% url 'aboutpage' %}">About</a></li>
                     </div>
-                    <div class="sort-bar-element">
-                        <b><a style="text-decoration:none;color: white;" href="{% url 'logout' %}">Change Password</a></b><br>
+
+                    <div class="navbutton" id="navbutton">
+                        {% if request.user.is_authenticated %}
+
+                        <li><Button onclick="location.href='{% url 'createrecipeform' %}'" id="signupbutton"
+                                class="btn">Create</Button>
+                        </li>
+
+                        <li><button onclick="toggleTheme()" id="lightdarkbutton" class="btn"><i id="toggleicon"
+                                    class="fa fa-moon-o"></i></button></li>
+
+                        <li><Button style="    height: 40px;width: 40px; border-radius: 50%;" onclick="logoutbar()"
+                                id="signupbutton" class="btn"><i style='font-size:20px;color:white'
+                                    class='fas'>&#xf406;</i></Button>
+                        </li>
+                        <div id="logout-bar" class="logout-bar">
+                            <div class="sort-bar-element">
+                                <b><a style="text-decoration:none;color: white;"
+                                        href="{% url 'chefs_profile' request.user.username %}">My
+                                        Profile</a></b><br>
+                            </div>
+                            <div class="sort-bar-element">
+                                <b><a style="text-decoration:none;color: white;" href="{% url 'logout' %}">Change
+                                        Password</a></b><br>
+                            </div>
+                            <div class="sort-bar-element">
+                                <b><a style="text-decoration:none;color: white;"
+                                        href="{% url 'logout' %}">Logout</a></b><br>
+                            </div>
+                        </div>
+                        {% else %}
+                        <li><Button onclick="toggleTheme()" id="lightdarkbutton" class="btn"><i
+                                    style='font-size:20px;color:white' id="toggleicon"
+                                    class="fa fa-moon-o"></i></Button></li>
+                        <li><Button onclick="location.href='{% url 'signuppage' %}'" id="signupbutton" class="btn">Sign
+                                Up</Button>
+                        </li>
+                        <li><Button onclick="location.href='{% url 'loginpage' %}'" id="loginbutton"
+                                class="btn">Login</Button>
+                        </li>
+                        {% endif %}
+
+
                     </div>
-                    <div class="sort-bar-element">
-                        <b><a style="text-decoration:none;color: white;" href="{% url 'logout' %}">Logout</a></b><br>
+
+                    <div class="hameburgar">
+                        <a class="" class="hameburgar" onclick="displaynev()">
+                            <i class="fa fa-bars"></i>
+                        </a>
                     </div>
-                </div>
-                {% else %}
-                <li><Button onclick="toggleTheme()" id="lightdarkbutton" class="btn"><i
-                            style='font-size:20px;color:white' id="toggleicon" class="fa fa-moon-o"></i></Button></li>
-                <li><Button onclick="location.href='{% url 'signuppage' %}'" id="signupbutton" class="btn">Sign
-                        Up</Button>
-                </li>
-                <li><Button onclick="location.href='{% url 'loginpage' %}'" id="loginbutton" class="btn">Login</Button>
-                </li>
-                {% endif %}
 
-
-
-            </ul>
+                </ul>
+            </div>
         </b>
 
-        <div class="burger">
-            <div class="line"></div>
-            <div class="line"></div>
-            <div class="line"></div>
-        </div>
     </nav>
 
     {% if messages %}
@@ -86,66 +99,6 @@
     {% endfor %}
 
     {% endif %}
-
-
-    <div class="form-popup" style=" box-shadow: 0px 0px 20px 0px #000000; border: 2px aqua;" id="myForm">
-        <form class="form-container" action="{% url 'createrecipe' %}" method="post" action="/submit_recipe"
-            enctype="multipart/form-data">
-            {% csrf_token %} <!-- Include CSRF token for form submission -->
-
-            <span class="close" onclick="closeForm()">&times;</span>
-            <h2>Recipe Form</h2>
-            <label for="recipe_image">Recipe Image:</label>
-            <input type="file" id="recipe_image" name="recipe_image">
-            <br>
-            <br>
-            <label for="title">Title:</label>
-            <input type="text" id="title" name="title" maxlength="50">
-            <br>
-            <label for="description">Description:</label>
-            <textarea id="description" name="description" maxlength="800"></textarea>
-
-            <label for="category">Category:</label>
-            <select id="category" name="category"><br>
-                <option value="Breakfast">Breakfast</option>
-                <option value="Lunch">Lunch</option>
-                <option value="Dinner">Dinner</option>
-                <option value="Dessert">Dessert</option>
-            </select><br>
-            <br>
-            <label for="total_time">Total Time (minutes):</label>
-            <input type="number" id="total_time" name="total_time" min="1" max="120">
-            <br><br>
-            <label for="difficulty">Difficulty:</label>
-            <select id="difficulty" name="difficulty">
-                <option value="easy">Easy</option>
-                <option value="medium">Medium</option>
-                <option value="hard">Hard</option>
-            </select>
-            <br><br>
-            <label for="yields">Yields (Number of persons):</label>
-            <input type="number" id="yields" name="yields" min="1" max="100"><br><br>
-
-            <label for="cuisine">Cuisine:(like Indian)</label>
-            <input type="text" id="cuisine" name="cuisine" maxlength="16">
-            <br><br>
-            <label for="ingredients">Ingredients:(Separate by ,)</label>
-            <textarea id="ingredients" name="ingredients" maxlength="200"></textarea>
-
-            <label for="steps">Steps:</label>
-            <input type="text" id="id_steps" name="step1" value="" placeholder="Enter Step1">
-            <input type="text" id="id_steps" name="step2" value="" placeholder="Enter Step2">
-            <input type="text" id="id_steps" name="step3" value="" placeholder="Enter Step3">
-            <input type="text" id="id_steps" name="step4" value="" placeholder="Enter Step4">
-            <input type="text" id="id_steps" name="step5" value="" placeholder="Enter Step5">
-            <input type="text" id="id_steps" name="step6" value="" placeholder="Enter Step6">
-            <input type="text" id="id_steps" name="step7" value="" placeholder="Enter Step7">
-
-
-
-            <input type="submit" value="Submit">
-        </form>
-    </div>
 
 
 
@@ -201,7 +154,7 @@
             document.getElementById("myForm").style.display = "none";
         }
 
-       
+
 
         function logoutbar() {
             let logout = document.getElementById("logout-bar");
@@ -212,105 +165,30 @@
             }
         }
 
-      
+        function displaynev() {
+            let navlst = document.getElementById("nav-list-div");
+            let navbutton = document.getElementById("navbutton");
+            let navlstDisplay = window.getComputedStyle(navlst).display;
+
+            if (navlstDisplay === "none") {
+                navlst.style.display = "block"; // Show the nav list
+                navbutton.style.display = "none"; // Hide the nav button
+            } else {
+                navlst.style.display = "none"; // Hide the nav list
+                navbutton.style.display = "flex"; // Show the nav button
+            }
+        }
+
+
+
+
+
+
+
+
 
     </script>
 
-    <!-- 
-    <div class="modal" id="recipeModal">
-        <div class="container" id="recipeFormContainer">
-            <button class="close-button" onclick="closeForm()">✖</button>
-            <h1>Create Recipe</h1>
-            <form method="post" action="{% url 'createrecipe' %}" enctype="multipart/form-data" id="recipeForm">
-                {% csrf_token %}
-
-                <label for="id_image">Recipe Image:</label><br>
-                <input type="file" id="id_image" name="profileimage"><br><br>
-                
-                <label for="id_title">Title:</label><br>
-                <input type="text" id="id_title" name="title"><br><br>
-                <label for="id_description">Description:</label><br>
-                <textarea id="id_description" name="description"></textarea><br><br>
-                <label for="id_ingredients">Ingredients (separate with commas):</label><br>
-                <textarea id="id_ingredients" name="ingredients"></textarea><br><br>
-                
-
-                <!-- <label for="id_ingredients">steps:</label><br>
-                <textarea id="steps" name="steps"></textarea><br><br> -->
-
-    <!-- <h2>Steps:</h2>
-                <div class="steps-container" id="inputs">
-                     
-                </div> 
-                 <button type="button" onclick="addInput()" class="add-step-button">Add Step</button><br><br>
-
-                <input type="hidden" id="id_steps" name="steps" value="">
-
-                <label for="id_images">Additional Images:</label><br>
-                <input type="file" id="id_images" name="mediaimages" multiple><br><br>
-
-
-                <button type="submit" style="display: block; margin-top: 10px;">Save Recipe</button>
-            </form>
-        </div>
-    </div>  
- 
-    <script>
-        var maxSteps = 10;
-
-        function openForm() {
-            document.getElementById('recipeModal').style.display = 'block';
-        }
-
-        function addInput() {
-            var inputContainer = document.getElementById('inputs');
-            var stepCount = inputContainer.childElementCount;
-            if (stepCount < maxSteps) {
-                var inputRow = document.createElement('div');
-                var input = document.createElement('textarea');
-                var removeButton = document.createElement('button');
-                input.className="step"
-                // input.name = 'step';
-                inputRow.appendChild(input);
-                removeButton.textContent = 'Remove';
-                removeButton.onclick = function() {
-                    inputRow.remove();
-                    updateStepNumbers();
-                };
-                inputRow.appendChild(removeButton);
-                inputContainer.appendChild(inputRow);
-                updateStepNumbers();
-            } else {
-                alert('You can only add up to ' + maxSteps + ' steps.');
-            }
-        }
-
-        function updateStepNumbers() {
-            // var steps = document.getElementsByName('step');
-            var steps = document.getElementsByClassName('step');
-            for (var i = 0; i < steps.length; i++) {
-                steps[i].setAttribute('placeholder', 'Step ' + (i + 1));
-                steps[i].name = 'step'+(i+1);
-            }
-        }
-
-     
-
-        // document.getElementById('recipeForm').onsubmit = function() {
-        //     var steps = document.getElementsByName('step');
-        //     var stepsValue = '';
-        //     for (var i = 0; i < steps.length; i++) {
-        //         if (steps[i].value.trim() !== '') {
-        //             stepsValue += steps[i].value.trim() + '\n';
-        //         }
-        //     }
-        //     document.getElementById('id_steps').value = stepsValue.trim();
-        // };
-
-        function closeForm() {
-            document.getElementById('recipeModal').style.display = 'none';
-        }
-    </script>  -->
 
 
     {% block body %} {% endblock body %}
@@ -319,36 +197,21 @@
 
 
 </body>
-<footer class="footer-text">
-    <div class="footer-main">
-        <div class="footer-section">
-            <h5>About Us</h5>
-            <p>Welcome to our website, a wonderful place to explore and <br> learn how to Cook like a pro</p><br>
-            <img src="logo.jpeg" alt="logo"><a>Terms and Conditions</a>
-        </div>
-        <div class="footer-section2">
-            <div class="sub-sec1">
-                <b>
-                    <li>Learn More
-                </b>
-                <li><a href="#Home">Our Cooks</a></li>
-                <li><a href="#Home">See Our Features</a></li>
-                <li><a href="#Home">FAQ</a></li>
-            </div>
-            <div class="sub-sec2">
-                <b>
-                    <li>Recipes
-                </b>
-                <li><a href="#Home">What to Cook This Week</a></li>
-                <li><a href="#Home">Pasta</a></li>
-                <li><a href="#Home">Dinner</a></li>
-                <li><a href="#Home">Healthy</a></li>
-                <li><a href="#Home">Vegiterian</a></li>
-                <li><a href="#Home">Vegan</a></li>
-                <li><a href="#Home">Sweets</a></li>
 
-            </div>
-        </div>
+<footer class="footer">
+    <div>
+        <h3 style="color: white;">This Web App is Created For Learning and Educational Purpose</h3>
+        <h3 style="color: white;">Made By : <a style="color: white;" href=""> Daksh Gupta &#128526;&#128526;&#128640;<i
+                    class="fa fa-heart" style="font-size:26px;color:red"></i></a></h3>
+        <a style="color: white;" href="https://github.com/dakshg393"><i class="fab fa-github"
+                style="font-size:26px; color:white;"></i></a>&nbsp;&nbsp;&nbsp;&nbsp;
+        <a style="color: white;" href="https://linkedin.com/in/dakshg393"><i class='fab fa-linkedin'
+                style='font-size:26px ;  color:white;'></i></a>&nbsp;&nbsp;&nbsp;&nbsp;
+        <a style="color: white;" href="https://leetcode.com/u/dakshg393/"><i class=''
+                style='font-size:26px;  color:white;'>Leetcode</i></a>
+
+        <h3 style="color: white;">All Rights are Reserved By @dakshgupta</h3>
+        <h3 style="color: white;">@CopyRight 2024-2030</h3>
     </div>
 </footer>
 

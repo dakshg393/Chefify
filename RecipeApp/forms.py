@@ -1,5 +1,6 @@
+from attr import fields
 from django import forms
-from .models import Recipe,RecipeDetails,RecipeSteps,RecipeRating,Chefsprofile
+from .models import ChefRating, Recipe,RecipeDetails,RecipeSteps,RecipeRating,Chefsprofile,ChefRating
 
 class RecipeForm(forms.ModelForm):
     class Meta:
@@ -28,3 +29,7 @@ class ChefsprofileForm(forms.ModelForm):
         model = Chefsprofile
         fields = ['chef_image', 'name', 'username', 'description', 'tags']
 
+class ChefRatingForm(forms.ModelForm):
+    class Meta:
+        model = ChefRating
+        fields = ['rating']

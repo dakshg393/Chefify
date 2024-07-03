@@ -25,18 +25,29 @@
 
 </div>
   <div class="chefs-main">
-    {% for chefs in chefs %}
-    <a href="{% url 'chefs_profile' chefs.username %}" class="recipe-link">
+    {% for chefs in allchefsWithReating %}
+    <a href="{% url 'chefs_profile' chefs.chef.username %}" class="recipe-link">
       <div class="chefs-box">
         <div class="chefs-img-box">
           <div class="chefs-img"
-            style="background-image: url('{{ MEDIA_URL }}{{ chefs.chef_image.url }}');">
+            style="background-image: url('{{ MEDIA_URL }}{{ chefs.chef.chef_image.url }}');">
           </div>
         </div>
         <div class="chefs-name">
+          
+        <h2>{{ chefs.chef.username }}</h2>
+          
+        <div class="star-rating">
 
-          <h2>{{ chefs.username }}</h2>
+          <span style="font-size: large;"  class="fa fa-star{% if chefs.average_rating >= 1%} checked {% endif %}"></span>
+          <span style="font-size: large;"  class="fa fa-star{% if chefs.average_rating >= 2%} checked {% endif %}"></span>
+          <span style="font-size: large;"  class="fa fa-star{% if chefs.average_rating >= 3%} checked {% endif %}"></span>
+          <span style="font-size: large;"  class="fa fa-star{% if chefs.average_rating >= 4%} checked {% endif %}"></span>
+          <span style="font-size: large;"  class="fa fa-star{% if chefs.average_rating >= 5%} checked {% endif %}"></span>
 
+        </div>
+
+          
         </div>
       </div>
     </a>
@@ -56,4 +67,7 @@
       }
   }
 </script>
+
+
+
 {% endblock body %}

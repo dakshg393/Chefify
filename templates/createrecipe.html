@@ -7,7 +7,7 @@
         {% csrf_token %} <!-- Include CSRF token for form submission -->
 
 
-        <h2>Recipe Form</h2>
+        <h1 style="color: #ff5900;">Create Recipe </h1>
         <label for="recipe_image">Recipe Image:</label>
         <input type="file" id="recipe_image" name="recipe_image">
         <br>
@@ -20,10 +20,14 @@
 
         <label for="category">Category:</label>
         <select id="category" name="category"><br>
-            <option value="Breakfast">Breakfast</option>
-            <option value="Lunch">Lunch</option>
-            <option value="Dinner">Dinner</option>
-            <option value="Dessert">Dessert</option>
+            <option value="North_Indian">North Indian</option>
+            <option value="South_Indian">South Indian</option>
+            <option value="Fast_Food">Fast Food</option>
+            <option value="Drinks_Juices">Drinks & Juices</option>
+            <option value="International_Cuisine">International Cuisine</option>
+            <option value="Healthy_Diet" >Healthy & Diet</option>
+            <option value="Desserts_Sweets">Desserts & Sweets</option>
+            
         </select><br>
         <br>
         <label for="total_time">Total Time (minutes):</label>

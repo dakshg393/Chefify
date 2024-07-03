@@ -89,39 +89,57 @@
 
 <div class="review-box-main">
 
-    <div class="review-page-heading" style="height: 10%; width: 100%; background-color: #008CBA;"></div>
+    <div class="review-page-heading" style="  display: inline-flex;
+    justify-content: center; gap: 60%;
+    align-items: center;height: 10%; width: 100%;">
+        <h1 style="text-align: left; ">Recipe Reviews</h1>
+
+        <Button style=" width: 15%; height: 60%;" id="feedback-button" >Add Review +</Button>
+                
+    </div>
+
+  
      
     <div class="allreviews">
-    <div class="feedback-box">
-        <div class="username">@{{request.user.username}}</div>
 
-        <div class="like-dislike">
-            <input type="radio" id="like" name="like" value="1">
-            <label for="like"><i class='fas fa-thumbs-up' style='font-size:20px;color:#008CBA;'></i></label>
 
-            <input type="radio" id="dislike" name="like" value="0">
-            <i class='fas fa-thumbs-down' style='font-size:20px;color:#f44336'></i>
 
-        </div>
+    <div  class="feedback-box-form" id="feedback-form">
 
-        <div style=" height: 25%;" class="comment-box">
-            <textarea placeholder="Leave a comment..."></textarea>
-        </div>
 
-        <div class="star-rating">
-            <input type="radio" id="star5" name="rating" value="5">
-            <label for="star5">★</label>
-            <input type="radio" id="star4" name="rating" value="4">
-            <label for="star4">★</label>
-            <input type="radio" id="star3" name="rating" value="3">
-            <label for="star3">★</label>
-            <input type="radio" id="star2" name="rating" value="2">
-            <label for="star2">★</label>
-            <input type="radio" id="star1" name="rating" value="1">
-            <label for="star1">★</label>
-        </div>
+        <form method="POST" action="">
+            {% csrf_token %}
 
-        <button type="submit" class="submit-button">Submit</button>
+            <div class="username">@{{request.user.username}}</div>
+
+            <div class="like-dislike">
+                <input type="radio" id="like" name="like" value="1">
+                <label for="like"><i class='fas fa-thumbs-up' style='font-size:20px;color:#008CBA;'></i></label>
+
+                <input type="radio" id="dislike" name="like" value="0">
+                <i class='fas fa-thumbs-down' style='font-size:20px;color:#f44336'></i>
+
+            </div>
+
+            <div style=" height: 25%;" class="comment-box">
+                <textarea name="comment" placeholder="Leave a comment..."></textarea>
+            </div>
+
+            <div class="star-rating">
+                <input type="radio" id="star5" name="rating" value="5">
+                <label for="star5">★</label>
+                <input type="radio" id="star4" name="rating" value="4">
+                <label for="star4">★</label>
+                <input type="radio" id="star3" name="rating" value="3">
+                <label for="star3">★</label>
+                <input type="radio" id="star2" name="rating" value="2">
+                <label for="star2">★</label>
+                <input type="radio" id="star1" name="rating" value="1">
+                <label for="star1">★</label>
+            </div>
+
+            <button type="submit" class="submit-button">Submit</button>
+        </form>
     </div>
 
 
@@ -148,7 +166,7 @@
     {% for reviews in ratings %}
 
     <div class="feedback-box">
-          <div class="username">@{{user}}</div>
+          <div class="username">@{{reviews.user}}</div>
 
         <div class="like-dislike">
             {% if reviews.like %}
@@ -156,8 +174,7 @@
             {% else %}
                 <i class='fas fa-thumbs-down' style='font-size:48px;color:#f44336'></i>
             {% endif %}
-        </div>
-
+        </div> 
         <div class="comment-box">
             <p>""{{reviews.comment}}""</p>
         </div>
@@ -182,7 +199,24 @@
 
 
 </div>
-</div>
 
+
+<script>
+    // JavaScript to handle showing/hiding the feedback form
+    document.addEventListener('DOMContentLoaded', () => {
+        const feedbackButton = document.getElementById('feedback-button');
+        const feedbackForm = document.getElementById('feedback-form');
+
+        feedbackButton.addEventListener('click', () => {
+            feedbackForm.style.display = 'block';
+        });
+
+        document.addEventListener('click', (event) => {
+            if (!feedbackForm.contains(event.target) && event.target !== feedbackButton) {
+                feedbackForm.style.display = 'none';
+            }
+        });
+    });
+</script>
 
 {% endblock body %}

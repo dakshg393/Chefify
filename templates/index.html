@@ -3,10 +3,10 @@
 {% block body %}
 
 
+{% load static %}
+<section class=" firstsection " id="Home">
 
-<section class=" firstsection" id="Home">
 
-  {% load static %}
   <div class="home-box">
     <div class="main-text-box">
       <div class="center-box">
@@ -35,62 +35,210 @@
 
 </section>
 
-<h1 class="text">Our Top Picks </h1>
-<!-- Excepteur sint occaecat cupidatat non qui proident, sunt culpa qui officia deserunmollit anim id est laborum.</h2> -->
-<section class="top-picks-main">
 
+<section class="section2">
 
-  <div class="top-picks-sub">
-    <div class="top-picks-recipes">
-      <h2 style="margin-top: -25%; position: absolute;">Top Recipes</h2>
-      <div class="recipebox">
+  <div class="category ">
 
-        <a href="" class="recipe-link">
-          <div class="img-container" style="background-image:">
+    <h1 style="text-decoration-line: underline;">What's on your mind?</h1><br><br>
 
-            <!-- {% if item.is_favorited%} -->
-            <button class="addto-favorite-button" style="background-color: #ff002d;"
-              onclick="event.stopPropagation(); location.href=''; return false;">&hearts;</button>
-
-            <!-- {% else %} -->
-            <button class="addto-favorite-button"
-              onclick="event.stopPropagation(); location.href=''; return false;  ">&hearts;</button>
-            <!-- 
-                    {% endif %} -->
-
+    <div class="categorydiv">
+      <a href="{% url 'Recipespage' %}?category=North_Indian">
+        <div class="category-box-main">
+          <div class="category-img-box">
+            <img style=" width: 80%;" src="{% static '/images/northIndian.png' %}" alt="no images" />
           </div>
 
-          <div class="title-container">
-            <h3><b>Dakshdhs</b></h3><br>
-            <div class="ratingdiv">4.5<i class="fa fa-star" style="color: #FFD43B;"></i>/5</div>
-
-
-          </div>
-          <!-- <div class="chefname-container">By:<i> {{ item.recipe.user }}</i></div> -->
-      </div>
-
-    </div>
-
-    <div class="top-picks-chefs">
-      <a href="" class="recipe-link">
-        <div class="chefs-box">
-          <div class="chefs-img-box">
-            <div class="chefs-img" style="background-image:jjkn ;">
-            </div>
-          </div>
-          <div class="chefs-name">
-
-            <h2>hwloo</h2>
-
+          <div class="category-title">
+            <h3 style="text-align: center;">North Indian</h3>
           </div>
         </div>
       </a>
+
+
+
+      <a href="{% url 'Recipespage' %}?category=South_Indian">
+        <div class="category-box-main">
+          <div class="category-img-box">
+            <img style=" width: 80%;" src="{% static '/images/southIndian.png' %}" alt="no images" />
+          </div>
+
+          <div class="category-title">
+            <h3 style="text-align: center;">South Indian</h3>
+          </div>
+        </div>
+      </a>
+
+
+
+      <a href="{% url 'Recipespage' %}?category=Fast_Food">
+        <div class="category-box-main">
+          <div class="category-img-box">
+            <img style=" width: 80%;" src="{% static '/images/fastFood.png' %}" alt="no images" />
+          </div>
+
+          <div class="category-title">
+            <h3 style="text-align: center;">Fast Food</h3>
+          </div>
+        </div>
+      </a>
+
+
+
+      <a href="{% url 'Recipespage' %}?category=Drinks_Juices">
+        <div class="category-box-main">
+          <div class="category-img-box">
+            <img style=" width: 80%;" src="{% static '/images/juice.png' %}" alt="no images" />
+          </div>
+
+          <div class="category-title">
+            <h3 style="text-align: center;">Drinks & Juices</h3>
+          </div>
+        </div>
+      </a>
+
+
+
+      <a href="{% url 'Recipespage' %}?category=International_Cuisine">
+        <div class="category-box-main">
+          <div class="category-img-box">
+            <img style=" width: 80%;" src="{% static '/images/international.png' %}" alt="no images" />
+          </div>
+
+          <div class="category-title">
+            <h3 style="text-align: center;">International Cuisine</h3>
+          </div>
+        </div>
+      </a>
+
+
+
+      <a href="{% url 'Recipespage' %}?category=Healthy_Diet">
+        <div class="category-box-main">
+          <div class="category-img-box">
+            <img style=" width: 80%;" src="{% static '/images/healthy.png' %}" alt="no images" />
+          </div>
+
+          <div class="category-title">
+            <h3 style="text-align: center;">Healthy & Diet</h3>
+          </div>
+        </div>
+      </a>
+
+
+
+      <a href="{% url 'Recipespage' %}?category=Desserts_Sweets">
+        
+        <div class="category-box-main">
+          <div class="category-img-box">
+            <img style=" width: 80%;" src="{% static '/images/sweet.png' %}" alt="no images" />
+          </div>
+
+          <div class="category-title">
+            <h3 style="text-align: center;">Desserts & Sweets</h3>
+          </div>
+        </div>
+      </a>
+
     </div>
+
   </div>
 
 
+  
+  <div id="top-recipe-box-main" class="top-recipe-box-main">
+
+    <h1  style="text-decoration-line: underline;">Top Recipes</h1>
+
+    <div class="top-recipe-box">
+
+
+      {% if top_recipes %}
+      {% for item in top_recipes %}
+      <div class="recipebox">
+        <a href="{% url 'recipe_detail' item.recipe.pk %}" class="recipe-link">
+          <div class="img-container"
+            style="background-image: url('{{ MEDIA_URL }}{{ item.recipe.recipe_image.url }}');">
+            
+          </div>
+          <div class="title-container">
+            <h3><b>{{ item.recipe.title }}</b></h3><br>
+            {% if item.average_rating is not None %}
+              <div class="ratingdiv">{{ item.average_rating|floatformat:2 }} <i class="fa fa-star" style="color: #FFD43B;"></i>/5</div>
+            {% else %}
+            <h6>no rating</h6>
+            {% endif %}
+          </div>
+        </a>
+      </div>
+      {% endfor %}
+      {% else %}
+      <h1>No recipes</h1>
+      {% endif %}
+
+
+
+
+
+
+
+    </div>
+
+
+  </div>
+
+
+
+
+  <div id="top-chefs" class="top-chefs">
+
+    <h1 style="text-decoration-line: underline;">Top chefs</h1>
+
+    <div class="top-chef-box-main">
+
+      {% for chefs in top_chefs %}
+
+      <a href="{% url 'chefs_profile' chefs.chef.username %}">
+
+
+        <div class="top-chef-box">
+          <div class="top-chef-img" style="background-image: url('{{ MEDIA_URL }}{{ chefs.chef.chef_image.url }}');">
+          </div>
+          <div class="top-chef-name">
+
+            <h3>{{ chefs.chef.username }}</h3>
+            <div class="star-rating">
+              {% if chefs.average_rating is not None %}
+                <span style="font-size: large;"
+                  class="fa fa-star{% if chefs.average_rating >= 1%} checked {% endif %}"></span>
+                <span style="font-size: large;"
+                  class="fa fa-star{% if chefs.average_rating >= 2%} checked {% endif %}"></span>
+                <span style="font-size: large;"
+                  class="fa fa-star{% if chefs.average_rating >= 3%} checked {% endif %}"></span>
+                <span style="font-size: large;"
+                  class="fa fa-star{% if chefs.average_rating >= 4%} checked {% endif %}"></span>
+                <span style="font-size: large;"
+                  class="fa fa-star{% if chefs.average_rating >= 5%} checked {% endif %}"></span>
+
+              {% else %}
+
+              <h6>No rating</h6>
+
+              {% endif %}
+            </div>
+          </div>
+        </div>
+
+      </a>
+      {% endfor %}
+
+    </div>
+
+  </div>
+
+
+
+
 </section>
-
-
 
 {% endblock body %}

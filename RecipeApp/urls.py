@@ -7,8 +7,7 @@ from RecipeApp import views
 urlpatterns = [
     path('', views.index, name='home'),
     path('Recipes/', views.Recipespage, name='Recipespage'),  # Added trailing slash
-    path('Chefs/', views.Chefspage, name='Chefspage'),  # Added trailing slash
-    path('Occasions/', views.Occasionspage, name='Occasionspage'),  # Added trailing slash
+    path('Chefs/', views.Chefspage, name='Chefspage'),  # Added trailing slash# Added trailing slash
     path('about/', views.aboutpage, name='aboutpage'),  # Added trailing slash
     path('signup/', views.signuppage, name='signuppage'),  # Added trailing slash
     path('login/', views.loginpage, name='loginpage'),  # Added trailing slash

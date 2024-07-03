@@ -1,0 +1,144 @@
+@media only screen and (max-width: 1200px) {
+    .hameburgar {
+        display: block;
+    }
+
+    .nav-list-div {
+
+        display: none;
+
+
+    }
+
+    .navbar {
+        flex-direction: column;
+    }
+
+    .leftnav {
+        width: 90%;
+    }
+
+    .home-box {
+        flex-direction: column;
+    }
+
+    /* .rotate-img-box {
+        display: none;
+    } */
+
+  
+    .img-box {
+       
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .main-text-box {
+        margin-top: 50px;
+    }
+
+    
+    .rotate-img-box {
+        width: 90%;
+    }
+    .rotate {
+        height: 80%;
+    }
+
+    .main-text-box {
+        width: 100%;
+    }
+
+    .center-box {
+        
+        height: 90%;
+        width: 90%;
+    }
+
+    .nav-list {
+        justify-content: center;
+    }
+
+    .allreviews{
+        flex-direction: column;
+    }
+}
+
+
+@media only screen and (max-width:774px) {
+
+
+
+    .navbar {
+        flex-direction: column;
+    }
+
+    .recipe-page {
+        flex-direction: column;
+    }
+
+
+    .nav-list li {
+        padding: 0px 10px;
+    }
+
+
+    .rotate-img-box {
+        width: 90%;
+    }
+    .rotate {
+        height: 80%;
+    }
+
+    .main-text-box {
+        width: 100%;
+    }
+
+    .center-box {
+        
+        height: 90%;
+        width: 90%;
+    }
+
+
+    .filternavbar {
+        width: 100%;
+        text-align: center;
+    }
+
+    .recipeBoxcontainer {
+
+        width: 100%;
+
+    }
+
+
+    .chefs-main-box {
+        flex-direction: column;
+    }
+
+    .signup-form,
+    .container {
+        max-width: 316px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+    }
+
+
+    /* recipedetails */
+    .desc-details-box{
+        flex-direction: column;
+    }
+    .description-box-main {
+        width: 90%;
+    }
+
+    .details-box-main {
+        width: 90%;
+    }
+
+
+}

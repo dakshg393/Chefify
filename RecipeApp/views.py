@@ -1,96 +1,69 @@
 import email
 from email import message
+from traceback import print_tb
 from unicodedata import category
+from warnings import catch_warnings
 from django.shortcuts import render,HttpResponse, redirect, get_object_or_404
 from django.contrib.auth import authenticate,login,logout
 from django.contrib import messages
-from django.contrib.auth.models import User 
-from .forms import RecipeForm,RecipeDetailsForm,RecipeStepsForm,RecipeRatingForm,ChefsprofileForm
-from .models import Recipe,RecipeDetails,RecipeSteps,Chefsprofile,RecipeRating,RecipeFavourite
-
+from django.contrib.auth.models import User
+from numpy import average 
+from .forms import RecipeForm,RecipeDetailsForm,RecipeStepsForm,RecipeRatingForm,ChefsprofileForm,ChefRatingForm
+from .models import Recipe,RecipeDetails,RecipeSteps,Chefsprofile,RecipeRating,RecipeFavourite,ChefRating
+from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
+from django.core.exceptions import ObjectDoesNotExist
+from django.db.models import Avg
 from faker import Faker
 
 
 def index(request):
 
+    chefs = Chefsprofile.objects.all()
+    allchefsWithReating = []
 
-    return render(request,'index.html')
+    for chef in chefs:
+        allchefsWithReating.append({
+            'chef': chef,
+            'average_rating': chef.average_rating(),
+        })
+
+    # top_chefs = sorted(allchefsWithReating, key=lambda x: x['average_rating'], reverse=True)[:5]
+    top_chefs = sorted(allchefsWithReating, key=lambda x: x['average_rating'] if x['average_rating'] is not None else float('-inf'), reverse=True)[:5]
+
+    
+    recipes = Recipe.objects.all()
+
+    allrecipesWithReating = []
 
 
-# def Recipespage(request):
-    if request.user.is_authenticated:
+    
+    for recipe in recipes:
         
-        sort_by = request.GET.get('sort')
-        
-        if sort_by == 'new_to_old':
-            sort_value = '-created_at'
-        elif sort_by == 'old_to_new':
-            sort_value = 'created_at'
-        elif sort_by == 'rating_low_to_high':
-            sort_value = 'total_time'
-        elif sort_by == 'rating_high_to_low':
-            sort_value = '-total_time'
-        elif sort_by == 'time_low_to_high':
-            sort_value = 'total_time'
-        elif sort_by == 'time_high_to_low':
-            sort_value = '-total_time'
-        else:
-            sort_value = '-created_at'  # Default sorting
-
-        # Initialize recipe queryset
-        recipes = Recipe.objects.all()
-        allrecipes = recipes.order_by(sort_value)
-        is_favorited = RecipeFavourite.objects.filter(user=request.user, recipe=recipe, like=True).exists()
-
-        allrecipesWithReating= []
-        for recipe in allrecipes:
-            allrecipesWithReating.append({'recipe': recipe, 'average_rating': recipe.average_rating(),'is_favorited':is_favorited,})
-          
-        heading = "Result: All Recipes"
-
-        if request.method == "POST":
-            category = request.POST.getlist('category')
-            time = request.POST.get('time')
-            difficulty = request.POST.get('difficulty')
-            
-            filter_conditions = {}
-
-            if category:
-                filter_conditions['category__in'] = category
-
-            if time:
-                filter_conditions['total_time'] = time
-
-            if difficulty:
-                filter_conditions['difficulty'] = difficulty
-
-            
-            
-            recipelist = RecipeDetails.objects.filter(**filter_conditions).values_list('recipeid', flat=True)
-            recipelist = list(recipelist)
-            recipes = Recipe.objects.filter(recipe_id__in=recipelist)
-
-        # Apply sorting to the filtered queryset
-            allrecipes = recipes.order_by(sort_value)
-            allrecipesWithReating= []
+        if request.user.is_authenticated:
             is_favorited = RecipeFavourite.objects.filter(user=request.user, recipe=recipe, like=True).exists()
-
-            for recipe in allrecipes:
-                allrecipesWithReating.append({'recipe': recipe, 'average_rating': recipe.average_rating(),'is_favorited': is_favorited,})
-            heading = f"Filter: ({recipe.count()} Recipes)"
         
+        else:
+            is_favorited =False
         
 
-        return render(request, 'recipes.html', {'allrecipesWithReating': allrecipesWithReating, 'heading': heading})
-    else:
-        messages.info(request, 'please login to see recipe page')
-        return redirect('loginpage')
+        allrecipesWithReating.append({
+            'recipe': recipe,
+            'average_rating': recipe.average_rating(),
+            'is_favorited': is_favorited,
+        })
+
+    # top_recipes =sorted(allrecipesWithReating, key=lambda x:x['average_rating'], reverse=True)[:3]
+    top_recipes = sorted(allrecipesWithReating, key=lambda x: x['average_rating'] if x['average_rating'] is not None else float('-inf'), reverse=True)[:5]
+
+    
+    return render(request,'index.html',{'top_chefs': top_chefs , 'top_recipes':top_recipes })
+
 
 
 def Recipespage(request):
     if request.user.is_authenticated:
         sort_by = request.GET.get('sort')
-        
+        print(sort_by)
         if sort_by == 'new_to_old':
             sort_value = '-created_at'
         elif sort_by == 'old_to_new':
@@ -106,6 +79,8 @@ def Recipespage(request):
         else:
             sort_value = '-created_at'  # Default sorting
 
+
+        
         # Initialize recipe queryset
         recipes = Recipe.objects.all()
         allrecipes = recipes.order_by(sort_value)
@@ -121,8 +96,14 @@ def Recipespage(request):
 
         heading = "Result: All Recipes"
 
-        if request.method == "POST":
-            category = request.POST.getlist('category')
+        categ = request.GET.getlist('category')
+
+        if request.method == "POST" or categ:
+            if request.method == "POST":
+                category = request.POST.getlist('category')
+                print(category)
+            else:
+                category= categ
             time = request.POST.get('time')
             difficulty = request.POST.get('difficulty')
             
@@ -155,14 +136,22 @@ def Recipespage(request):
 
             heading = f"Filter: ({recipes.count()} Recipes)"
 
+
+        page = request.GET.get('page', 1)
+        paginator = Paginator(allrecipesWithReating, 9)  # Show 10 recipes per page
+
+        try:
+            allrecipesWithReating = paginator.page(page)
+        except PageNotAnInteger:
+            allrecipesWithReating = paginator.page(1)
+        except EmptyPage:
+            allrecipesWithReating = paginator.page(paginator.num_pages)
+   
+
         
         return render(request, 'recipes.html', {'allrecipesWithReating': allrecipesWithReating, 'heading': heading})
     else:
         return render(request, 'login.html')
-
-
-def Occasionspage(request):
-    return HttpResponse("this is about page")
 
 
 def aboutpage(request):
@@ -314,8 +303,6 @@ def chefregister(request):
     
 
 
-
-
 def createrecipe(request):
 
     if request.method == "POST":
@@ -367,6 +354,25 @@ def recipe_detail(request, pk):
 
         ratings= RecipeRating.objects.filter(recipe=pk)
 
+
+
+        if request.method == 'POST':
+            form = RecipeRatingForm(request.POST)
+            if form.is_valid():
+                if not RecipeRating.objects.filter(user=request.user, recipe=recipe).exists():
+                
+                    feedback =form.save(commit=False)
+                    feedback.user=request.user
+                    feedback.recipe = recipe 
+                    feedback.save()
+                    
+                    return redirect('recipe_detail', pk=pk)
+                else:
+                    messages.error(request, 'You alredy give review for this recipe')
+                    
+        else:
+            form = RecipeRatingForm()
+
         return render(request, 'recipe_detail.html', {'recipe': recipe, 'recipe_detail': recipe_detail, 'recipe_steps': recipe_steps , 'ingredients_list': ingredients_list,'ratings':ratings})
     
     else:
@@ -378,26 +384,151 @@ def recipe_detail(request, pk):
 def Chefspage(request):
     if request.user.is_authenticated:
         chefs = Chefsprofile.objects.all()
-        return render(request, 'chefs.html', {'chefs': chefs})
-       
-        # return render(request, 'recipes.html')
+        allchefsWithReating = []
+
+        for chef in chefs:
+            allchefsWithReating.append({
+                'chef': chef,
+                'average_rating': chef.average_rating(),
+            })
+
+        return render(request, 'chefs.html', {'allchefsWithReating': allchefsWithReating})
     else:
-        messages.info(request, 'please login to see chefs page')
+        messages.info(request, 'Please login to see chefs page')
         return redirect('loginpage')
-    
 
 def chefs_profile(request, username):
 
     if request.user.is_authenticated:
 
-        chef = get_object_or_404(User, username=username)
-        # Filter recipes by the fetched user
-        recipe = Recipe.objects.filter(user=chef).order_by('-created_at')
-        chefdetails=Chefsprofile.objects.get(username=chef)
+        if request.method == 'POST':
+            form_type = request.POST.get('form_type')
+                
+            if form_type == 'rating_form':
+                form = ChefRatingForm(request.POST)
+                if form.is_valid():
+                    chef_profile = get_object_or_404(Chefsprofile, user__username=username)
+                    
+                    # Check if a ChefRating object already exists for the current user and chef profile
+                    chefrating, created = ChefRating.objects.get_or_create(
+                        user=request.user,
+                        chef=chef_profile,
+                        defaults={'rating': form.cleaned_data['rating']}  # Update with the relevant field names from your form
+                    )
+                    
+                    if not created:
+                        # Update the existing ChefRating object if it already exists
+                        chefrating.rating = form.cleaned_data['rating']  # Update with the relevant field names from your form
+                        chefrating.save()
+                        print("Update successful")
+                    else:
+                        print("Save successful")  # This line assumes you wanted to print this message if a new object is created
+
+                    
+        # chef = get_object_or_404(User, username=username)
+        # # Filter recipes by the fetched user
+        # recipe = Recipe.objects.filter(user=chef).order_by('-created_at')
+        # chefdetails=Chefsprofile.objects.get(username=chef)
+        # # rating= ChefRating.objects.get(chef=username,user=request.user)
+
+
+
+
+        sort_by = request.GET.get('sort')
         
-        return render(request, 'chefsprofile.html', {'recipe': recipe, 'chefdetails':chefdetails })
+        if sort_by == 'new_to_old':
+            sort_value = '-created_at'
+        elif sort_by == 'old_to_new':
+            sort_value = 'created_at'
+        elif sort_by == 'rating_low_to_high':
+            sort_value = 'average_rating'
+        elif sort_by == 'rating_high_to_low':
+            sort_value = '-average_rating'
+        elif sort_by == 'time_low_to_high':
+            sort_value = 'total_time'
+        elif sort_by == 'time_high_to_low':
+            sort_value = '-total_time'
+        else:
+            sort_value = '-created_at'  # Default sorting
+
+        # Initialize recipe queryset
+        chef = get_object_or_404(User, username=username)
+        chefdetails=Chefsprofile.objects.get(username=chef)
+        recipes = Recipe.objects.filter(user=chef)
+        allrecipes = recipes.order_by(sort_value)
+        allrecipesWithReating = []
+
+        for recipe in allrecipes:
+            is_favorited = RecipeFavourite.objects.filter(user=request.user, recipe=recipe, like=True).exists()
+            allrecipesWithReating.append({
+                'recipe': recipe,
+                'average_rating': recipe.average_rating(),
+                'is_favorited': is_favorited,
+            })
+
+        heading = "Result: All Recipes"
+
+        if request.method == "POST":
+            category = request.POST.getlist('category')
+            time = request.POST.get('time')
+            difficulty = request.POST.get('difficulty')
+            
+            filter_conditions = {}
+
+            if category:
+                filter_conditions['category__in'] = category
+
+            if time:
+                filter_conditions['total_time'] = time
+
+            if difficulty:
+                filter_conditions['difficulty'] = difficulty
+
+            recipelist = RecipeDetails.objects.filter(**filter_conditions).values_list('recipeid', flat=True)
+            recipelist = list(recipelist)
+            recipes = Recipe.objects.filter(recipe_id__in=recipelist)  # Use id__in instead of recipe_id__in
+
+            # Apply sorting to the filtered queryset
+            allrecipes = recipes.order_by(sort_value)
+            allrecipesWithReating = []
+
+            for recipe in allrecipes:
+                is_favorited = RecipeFavourite.objects.filter(user=request.user, recipe=recipe, like=True).exists()
+                allrecipesWithReating.append({
+                    'recipe': recipe,
+                    'average_rating': recipe.average_rating(),
+                    'is_favorited': is_favorited,
+                })
+
+            heading = f"Filter: ({recipes.count()} Recipes)"
+
+
+        page = request.GET.get('page', 1)
+        paginator = Paginator(allrecipesWithReating, 9)  # Show 10 recipes per page
+
+        try:
+            allrecipesWithReating = paginator.page(page)
+        except PageNotAnInteger:
+            allrecipesWithReating = paginator.page(1)
+        except EmptyPage:
+            allrecipesWithReating = paginator.page(paginator.num_pages)
+   
+
+        
+
+
+        try:
+            rating = ChefRating.objects.get(chef=username, user=request.user)
+        except ObjectDoesNotExist:
+            rating = None
+
+
+
+        
+
+        return render(request, 'chefsprofile.html', {'allrecipesWithReating': allrecipesWithReating, 'heading': heading, 'chefrating':rating , 'chefdetails':chefdetails })
        
-        # return render(request, 'recipes.html')
+        
     else:
         messages.info(request, 'please login to see recipe page')
         return redirect('loginpage')
@@ -490,24 +621,5 @@ def fakedate(n):
 
             user.save()
 
-def show():
-    user = User.objects.values_list('username', flat=True)
-    return list(user)
-
-
-def aa():
-
-    a= Chefsprofile.objects.create(
-  
-        name = "username",       
-        username = "rname",
-        description="fgdgd",
-        tags="jdkj,ddf"
-        
-    )
-
-    
-
-    a.save()
 
 

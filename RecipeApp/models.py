@@ -1,10 +1,11 @@
+from email.headerregistry import UniqueSingleAddressHeader
+from enum import unique
 from django.db import models
 import uuid,os
 from django.contrib.auth.models import User
 
 from distutils import extension
 from django.db.models import Avg
-
 
 
 def recipe_image_path(instance, filename):
@@ -26,12 +27,16 @@ def chefsImagePath(instance, filename):
 
 class Chefsprofile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    chef_id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    chef_id = models.UUIDField( default=uuid.uuid4, editable=False)
     chef_image = models.ImageField(upload_to=chefsImagePath, default='chefs_images/default_chef_image.jpg')
     name = models.CharField(max_length=100)
-    username = models.CharField(max_length=100,unique=True)
+    username = models.CharField(primary_key=True, max_length=100,unique=True)
     description=models.TextField(null=True)
     tags=models.CharField(max_length=100,null=True)
+
+    def average_rating(self):
+        return self.chefrating_set.aggregate(Avg('rating'))['rating__avg']
+
     
 
 
@@ -96,3 +101,17 @@ class RecipeFavourite(models.Model):
     
     class Meta:
         unique_together = ('user', 'recipe')
+
+class ChefRating(models.Model):
+    user=models.ForeignKey(User,on_delete=models.CASCADE)
+    chef = models.ForeignKey(Chefsprofile, on_delete=models.CASCADE)
+    rating = models.PositiveSmallIntegerField(blank=False )
+
+
+    class Meta:
+        unique_together = ('user','chef')
+    
+
+
+
+

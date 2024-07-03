@@ -3,30 +3,45 @@
 {% block body %}
 <div class="recipe-page">
     <div class="filternavbar">
-        <h1>Filter By</h1>
-        <form action="{% url 'Recipespage' %}" method="POST" enctype="multipart/form-data">
-            {% csrf_token %}
-            <h2>Category</h2>
-            <input type="checkbox" id="breakfast" name="category" value="Breakfast">
-            <label class="sortednavbar-label" for="breakfast">Breakfast</label><br>
-            <input type="checkbox" id="lunch" name="category" value="Lunch">
-            <label class="sortednavbar-label" for="lunch">Lunch</label><br>
-            <input type="checkbox" id="dinner" name="category" value="Dinner">
-            <label class="sortednavbar-label" for="dinner">Dinner</label><br>
+        <a href="#" onclick="displayFilterForm()">
+            <h1>Filter By <i class="fas fa-angle-down" style="font-size:24px"></i></h1>
+        </a>
+        <div class="filterform" id="filterform">
+            <form  action="{% url 'Recipespage' %}" method="POST"
+                enctype="multipart/form-data">
+                {% csrf_token %}
+                <h2>Category</h2>
+                <input type="checkbox" name="category" value="North_Indian">
+                <label class="sortednavbar-label" for="North_Indian">North Indian</label><br>
+                <input type="checkbox" name="category" value="South_Indian">
+                <label class="sortednavbar-label" for="South_Indian">South Indian</label><br>
+                <input type="checkbox" name="category" value="Fast_Food">
+                <label class="sortednavbar-label" for="Fast_Food">Fast Food</label><br>
+                <input type="checkbox" name="category" value="Drinks_Juices">
+                <label class="sortednavbar-label" for="Drinks_Juices">Drinks & Juices</label><br>
+                <input type="checkbox" name="category" value="International_Cuisine">
+                <label class="sortednavbar-label" for="International_Cuisine">International Cuisine</label><br>
+                <input type="checkbox" name="category" value="Healthy_Diet">
+                <label class="sortednavbar-label" for="Healthy_Diet">Healthy & Diet</label><br>
+                <input type="checkbox" name="category" value="Desserts_Sweets">
+                <label class="sortednavbar-label" for="Desserts_Sweets">Desserts & Sweets</label><br>
 
-            <h2>Time</h2>
-            <input type="number" id="time" name="time" min="0" max="60"><br>
 
-            <h2>Difficulty</h2>
-            <input type="radio" id="easy" name="difficulty" value="easy">
-            <label class="sortednavbar-label" for="easy">Easy</label><br>
-            <input type="radio" id="medium" name="difficulty" value="medium">
-            <label class="sortednavbar-label" for="medium">Medium</label><br>
-            <input type="radio" id="hard" name="difficulty" value="hard">
-            <label class="sortednavbar-label" for="hard">Hard</label><br><br>
 
-            <button type="submit">Submit</button><br>
-        </form>
+                <h2>Time</h2>
+                <input type="number" id="time" name="time" min="0" max="60"><br>
+
+                <h2>Difficulty</h2>
+                <input type="radio" id="easy" name="difficulty" value="easy">
+                <label class="sortednavbar-label" for="easy">Easy</label><br>
+                <input type="radio" id="medium" name="difficulty" value="medium">
+                <label class="sortednavbar-label" for="medium">Medium</label><br>
+                <input type="radio" id="hard" name="difficulty" value="hard">
+                <label class="sortednavbar-label" for="hard">Hard</label><br><br>
+
+                <button type="submit">Submit</button><br>
+            </form>
+        </div>
     </div>
 
     <div class="recipeBoxcontainer">
@@ -73,14 +88,14 @@
                         <button class="addto-favorite-button" style="background-color: #ff002d;"
                             onclick="event.stopPropagation(); location.href='{% url 'add_favorite' item.recipe.pk %}'; return false;">&hearts;</button>
                         {% else %}
-                        <button class="addto-favorite-button"
+                        <button class="addto-favorite-button" style="background-color: #ffffff; color: black;"
                             onclick="event.stopPropagation(); location.href='{% url 'add_favorite' item.recipe.pk %}'; return false;">&hearts;</button>
                         {% endif %}
                     </div>
                     <div class="title-container">
                         <h3><b>{{ item.recipe.title }}</b></h3><br>
-                        {% if item.average_rating  != 0 %}
-                        <div class="ratingdiv">{{ item.average_rating }}<i class="fa fa-star"
+                        {% if item.average_rating != 0 %}
+                        <div class="ratingdiv">{{ item.average_rating|floatformat:2 }} <i class="fa fa-star"
                                 style="color: #FFD43B;"></i>/5</div>
                         {% endif %}
                     </div>
@@ -92,6 +107,37 @@
             <h1>No recipes</h1>
             {% endif %}
         </div>
+
+
+
+
+
+
+        <div class="pagination">
+            <span class="step-links">
+                {% if allrecipesWithReating.has_previous %}
+                <a class="paginstion-element"
+                    href="?page=1{% if request.GET.sort %}&sort={{ request.GET.sort }}{% endif %}">&laquo; first</a>
+                <a class="paginstion-element"
+                    href="?page={{ allrecipesWithReating.previous_page_number }}{% if request.GET.sort %}&sort={{ request.GET.sort }}{% endif %}">previous</a>
+                {% endif %}
+
+                <span class="current">
+                    Page {{ allrecipesWithReating.number }} of {{ allrecipesWithReating.paginator.num_pages }}.
+                </span>
+
+                {% if allrecipesWithReating.has_next %}
+                <a class="paginstion-element"
+                    href="?page={{ allrecipesWithReating.next_page_number }}{% if request.GET.sort %}&sort={{ request.GET.sort }}{% endif %}">next</a>
+                <a class="paginstion-element"
+                    href="?page={{ allrecipesWithReating.paginator.num_pages }}{% if request.GET.sort %}&sort={{ request.GET.sort }}{% endif %}">last
+                    &raquo;</a>
+                {% endif %}
+            </span>
+        </div>
+
+
+
     </div>
 </div>
 
@@ -99,6 +145,14 @@
     function toggleSortBar() {
         let sortBar = document.getElementById("sort-bar");
         sortBar.style.display = sortBar.style.display === "block" ? "none" : "block";
+    }
+
+
+
+    function displayFilterForm() {
+
+        let filterform = document.getElementById("filterform");
+        filterform.style.display = filterform.style.display === "none" ? "block" : "none";
     }
 
     function addToFavorite(recipeId) {
@@ -114,5 +168,10 @@
             })
             .catch(error => console.error('Error:', error));
     }
+
+
+
+
+
 </script>
 {% endblock body %}
