@@ -17,12 +17,14 @@ urlpatterns = [
     path('chefregisterform/', views.chefregisterform, name='chefregisterform'),
     path('chefregister/', views.chefregister, name='chefregister'), 
     path('add_favorite/<uuid:recipe_id>/', views.add_favorite, name='add_favorite'),
+    path('removeRecipe/<uuid:recipeid>/' , views.removeRecipe,name='removeRecipe'),
     # the html page redirect on url page using url name 
     # for actions
     path('register/', views.signup_request, name='signup'), 
     path('signin/', views.login_request, name='signin'),
     path('logout/', views.logout_request, name='logout'),
     path('createrecipe/', views.createrecipe, name='createrecipe'),
+    path('get-suggestions/', views.get_suggestions, name='get_suggestions'),
    
 ]
 

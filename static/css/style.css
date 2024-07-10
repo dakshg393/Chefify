@@ -25,6 +25,8 @@ body {
   --bg-color: white;
   background-color: var(--bg-color);
   text-transform: capitalize;
+  margin: 0;
+  padding: 0;
 
 }
 
@@ -39,11 +41,12 @@ body {
 html {
   scroll-behavior: smooth;
   scrollbar-color: #ff5900 rgb(255, 255, 255);
+  scrollbar-width: thin;
 }
 
 a {
   color: var(--body-color);
-  ;
+  cursor: pointer;
 }
 
 h1,
@@ -140,12 +143,59 @@ span {
     background-blend-mode: darken;
 }  */
 
-.search {
-  height: 30px;
+.search-bar-div {
+  position: relative;
   width: 75%;
+  
+}
+
+.search{
+  height: 30px;
+  width: 100%;
   border-radius: 17px;
   border: 2px solid rgb(0, 0, 0);
+}
+.suggestion-div{
+  display: none;
+  align-items: center;
+  flex-direction: column;
+  background-color: var(--bg-color);
+  color: var(--body-color);
+  position: absolute; 
+  width: 100%;
+  border-radius: 10px;
+  border: 2px solid var(--body-color);
+  height: 75vh;
+  overflow-y: scroll;
+  overflow-x: hidden;
+  scrollbar-width: thin;
+    scrollbar-color: auto;
+}
+.searching-result{
+    background-color: var(--bg-color);
+    color: var(--body-color);
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    padding: 10px;
+    border-bottom: 2px solid black;
+    border-radius: 13px;
+}
 
+.search-element{
+  display: flex;
+  justify-content: left;
+  align-items: center;
+  flex-direction: row;
+  width: 95%;
+  margin-top: 8px;
+  border: 2px solid;
+  border-radius: 8px;
+  overflow: hidden;
+  height: 65px;
+  
 }
 
 .btn {
@@ -421,7 +471,7 @@ section 2 home page */
   justify-content: center;
   align-items: center;
   flex-direction: column;
-  margin-top: 70px;
+  padding-top: 104px;
   gap: 40px;
 
 }
@@ -436,13 +486,19 @@ section 2 home page */
 }
 
 /* signup page css */
-*/ .signup-form {
-  max-width: 400px;
+
+.signupformmain{
+  display:flex;
+  justify-content: center;
+  align-items: center;
+}
+.signup-form {
+  width: 400px;
   margin: 50px auto;
   padding: 20px;
-  border: 2px solid #00eeff;
+  border: 2px solid #ff5900;
   border-radius: 5px;
-  box-shadow: 0px 0px 20px 0px #000000;
+  box-shadow: 0px 0px 20px 0px #ff5900;
 
 }
 
@@ -475,7 +531,7 @@ button {
   padding: 10px;
   border: none;
   border-radius: 130px;
-  background-color: #76818d;
+  background-color: #ff5900;
   color: #ffffff;
   cursor: pointer;
 }
@@ -491,12 +547,12 @@ button:hover {
   max-width: 400px;
   margin: auto;
   padding: 20px;
-  border: 1px solid #ccc;
+  border: 1px solid #ff5900;
   border-radius: 5px;
   margin-top: 20px;
   margin-bottom: 20px;
   color: var(--body-color);
-  box-shadow: 0px 0px 20px 0px #000000;
+  box-shadow: 0px 0px 20px 0px #ff5900;
 
 }
 
@@ -517,12 +573,12 @@ button:hover {
 }
 
 .container form input[type="submit"] {
-  background-color: #007bff;
-
+  background-color: #ff5900;
   cursor: pointer;
 }
 
 .oauth-buttons {
+  text-align: center;
   margin-top: 20px;
 }
 
@@ -539,6 +595,8 @@ button:hover {
 
 .form-container {
   max-width: 100%;
+  border: 2px solid #ff5900;
+
 }
 
 .form-container input[type=text],
@@ -555,7 +613,7 @@ button:hover {
 }
 
 .form-container input[type=submit] {
-  background-color: #4CAF50;
+  background-color: #ff5900;
   padding: 12px 20px;
   border: none;
   cursor: pointer;
@@ -588,7 +646,7 @@ button:hover {
 
 
 .filterform {
-  display: none;
+  display: block;
 }
 
 
@@ -724,6 +782,7 @@ button:hover {
   width: 58px;
   border-radius: 4px;
   background-color: #e7fbff;
+  color: #000000;
 }
 
 /* 
@@ -754,11 +813,12 @@ recipe_details.html recipedetail page css */
 
 
 .desc-details-box {
-  height: 80vh;
+  
   display: flex;
   justify-content: center;
   align-items: center;
   gap: 3%;
+  padding: 30px 10px 30px 10px;
 }
 
 .description-box-main {
@@ -786,7 +846,7 @@ recipe_details.html recipedetail page css */
   line-height: 25px;
   font-family: Ubuntu;
   color: var(--body-color);
-  ;
+  word-wrap: break-word;
   padding: 20px;
 }
 
@@ -812,7 +872,7 @@ recipe_details.html recipedetail page css */
 
 
 .steps-box-main {
-  height: 80vh;
+  
   display: flex;
   align-items: center;
   justify-content: center;
@@ -827,7 +887,7 @@ recipe_details.html recipedetail page css */
 }
 
 .ingridients-box-main {
-  height: 50vh;
+  
   display: flex;
   align-items: center;
   justify-content: center;
@@ -840,7 +900,7 @@ recipe_details.html recipedetail page css */
   height: 90%;
   width: 93%;
   color: var(--body-color);
-  ;
+  
 
 }
 
@@ -879,10 +939,10 @@ recipe_details.html recipedetail page css */
   justify-content: center;
   align-items: center;
   height: 90%;
-  width: 100%;
   gap: 30px;
   margin: 0;
   flex-direction: row;
+  flex-wrap: wrap;
 
 }
 
@@ -891,33 +951,34 @@ recipe_details.html recipedetail page css */
 }
 
 .feedback-box {
-  box-shadow: 0px 0px 20px 0px black;
-  background: #fff;
+  color: var(--body-color);
+  background-color: var(--bg-color);
   padding: 20px;
   border: 2px solid black;
   border-radius: 8px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  width: 300px;
+  width: 250px;
   height: 280px;
   text-align: center;
 }
 
 .feedback-box-form {
+  color: var(--body-color);
   box-shadow: 0px 0px 20px 0px black;
-  background: #fff;
+  background-color: var(--bg-color);
   padding: 20px;
   border: 2px solid black;
   border-radius: 8px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   width: 300px;
   height: 280px;
-  position: absolute;
   display: none;
   text-align: center;
 }
 
 
 .username {
+  color: var(--body-color);
   font-size: 1.2em;
   font-weight: bold;
   margin-bottom: 10px;
@@ -926,6 +987,7 @@ recipe_details.html recipedetail page css */
 
 
 .comment-box textarea {
+  color: black;
   width: 90%;
   height: 60px;
   padding: 10px;
@@ -933,15 +995,18 @@ recipe_details.html recipedetail page css */
   border: 1px solid #ccc;
   border-radius: 4px;
   resize: none;
+
 }
 
 
 
 .comment-box {
+  color: var(--body-color);
   height: 50%;
   width: 90%;
   overflow-wrap: break-word;
   padding: 0px 15px 0px 15px;
+  overflow: auto;
 
 }
 
@@ -981,7 +1046,7 @@ recipe_details.html recipedetail page css */
   margin-top: 20px;
   padding: 10px 20px;
   border: none;
-  background: #2196f3;
+  background: #ff5900;
   color: #fff;
   font-size: 1em;
   cursor: pointer;
@@ -1075,11 +1140,10 @@ recipe_details.html recipedetail page css */
   chefsprofile page css */
 
 .chefs-profile {
-  height: 50vh;
-
   justify-content: center;
   align-items: center;
   display: flex;
+  padding: 10px;
 }
 
 .chefs-main-box {
@@ -1093,6 +1157,7 @@ recipe_details.html recipedetail page css */
   gap: 2%;
   border-radius: 36px;
   box-shadow: 0px 0px 20px 0px black;
+  padding: 10px;
 }
 
 .chefs-profile-img-box {
@@ -1116,6 +1181,7 @@ recipe_details.html recipedetail page css */
   background-color: var(--bg-color);
   color: var(--body-color);
   box-shadow: 0px 0px 20px 0px black;
+  padding: 10px;
 
 
 }
@@ -1164,7 +1230,7 @@ dffdfdfd */
   width: 100%;
   height: 40px;
   text-decoration: none;
-  background-color: rgb(19, 45, 139);
+  background-color: #ff5900;
   color: var(--body-color);
   box-shadow: 0px 0px 20px 0px black inset;
   border-radius: 10px;
@@ -1193,3 +1259,6 @@ about page css */
   width: 60%;
   color: var(--body-color);
 }
+
+
+

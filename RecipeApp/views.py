@@ -7,12 +7,14 @@ from django.shortcuts import render,HttpResponse, redirect, get_object_or_404
 from django.contrib.auth import authenticate,login,logout
 from django.contrib import messages
 from django.contrib.auth.models import User
+from grpc import Status
 from numpy import average 
 from .forms import RecipeForm,RecipeDetailsForm,RecipeStepsForm,RecipeRatingForm,ChefsprofileForm,ChefRatingForm
 from .models import Recipe,RecipeDetails,RecipeSteps,Chefsprofile,RecipeRating,RecipeFavourite,ChefRating
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.core.exceptions import ObjectDoesNotExist
-from django.db.models import Avg
+from django.http import JsonResponse
+from django.db.models import Avg,Q
 from faker import Faker
 
 
@@ -53,7 +55,7 @@ def index(request):
         })
 
     # top_recipes =sorted(allrecipesWithReating, key=lambda x:x['average_rating'], reverse=True)[:3]
-    top_recipes = sorted(allrecipesWithReating, key=lambda x: x['average_rating'] if x['average_rating'] is not None else float('-inf'), reverse=True)[:5]
+    top_recipes = sorted(allrecipesWithReating, key=lambda x: x['average_rating'] if x['average_rating'] is not None else float('-inf'), reverse=True)[:3]
 
     
     return render(request,'index.html',{'top_chefs': top_chefs , 'top_recipes':top_recipes })
@@ -425,14 +427,7 @@ def chefs_profile(request, username):
                         print("Save successful")  # This line assumes you wanted to print this message if a new object is created
 
                     
-        # chef = get_object_or_404(User, username=username)
-        # # Filter recipes by the fetched user
-        # recipe = Recipe.objects.filter(user=chef).order_by('-created_at')
-        # chefdetails=Chefsprofile.objects.get(username=chef)
-        # # rating= ChefRating.objects.get(chef=username,user=request.user)
-
-
-
+ 
 
         sort_by = request.GET.get('sort')
         
@@ -513,18 +508,11 @@ def chefs_profile(request, username):
         except EmptyPage:
             allrecipesWithReating = paginator.page(paginator.num_pages)
    
-
-        
-
-
         try:
             rating = ChefRating.objects.get(chef=username, user=request.user)
         except ObjectDoesNotExist:
             rating = None
 
-
-
-        
 
         return render(request, 'chefsprofile.html', {'allrecipesWithReating': allrecipesWithReating, 'heading': heading, 'chefrating':rating , 'chefdetails':chefdetails })
        
@@ -536,35 +524,54 @@ def chefs_profile(request, username):
   
 
 
+
 def add_favorite(request, recipe_id):
     if not request.user.is_authenticated:
-        message.info(request,"You are not login Please Login")
-        return redirect('loginpage')
-    else:
-        recipe = get_object_or_404(Recipe, pk=recipe_id)
-        favorite, created = RecipeFavourite.objects.get_or_create(user=request.user, recipe=recipe)
-        favorite.like = not favorite.like
-        favorite.save()
+        messages.info(request, "You are not logged in. Please log in.")
+        return JsonResponse({'status': 'error', 'message': 'User not authenticated'}, status=401)
 
+    recipe = get_object_or_404(Recipe, pk=recipe_id)
+    favorite, created = RecipeFavourite.objects.get_or_create(user=request.user, recipe=recipe)
+    favorite.like = not favorite.like
+    favorite.save()
+
+    return JsonResponse({'status': 'success', 'is_favorited': favorite.like})
+
+
+
+def removeRecipe(request , recipeid):
+    if not request.user.is_authenticated:
+        messages.info(request,"User is not loggin please login first")
+        return JsonResponse({'status' : 'error', 'message':'user us not login'} , status=401)
+    
+    recipe = get_object_or_404(Recipe, pk=recipeid)
+    recipe.delete()
+
+    return JsonResponse({'status':'success'})
+
+
+
+
+
+
+
+
+
+def get_suggestions(request):
+    query = request.GET.get('query', '')
+    if len(query) > 3:
+        # Fetch suggestions from Recipe and Chef models
+        recipes = Recipe.objects.filter(title__icontains=query)[:5].values( 'title','recipe_id','recipe_image')
+        chefs = Chefsprofile.objects.filter(name__icontains=query)[:5].values( 'name','chef_image','username')
         
-        return redirect('/Recipes/')
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+        # Convert QuerySets to lists
+        recipes_list = list(recipes)
+        chefs_list = list(chefs)
+        
+        # Return JsonResponse with serialized data
+        return JsonResponse({'recipes': recipes_list, 'chefs': chefs_list}, safe=False)
+    else:
+        return JsonResponse({'recipes': [], 'chefs': []})
 
 
 

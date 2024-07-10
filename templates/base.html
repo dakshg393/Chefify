@@ -7,11 +7,13 @@
     {% load static %}
     <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}">
     <link rel="stylesheet" type="text/css" href="{% static 'css/responsive.css' %}">
-    <script src="{% static '/js/index.js' %}"></script>
+    <script src="{% static 'js/index.js' %}"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
     <title> {% block title %} {% endblock title %} Chefify</title>
+    <link rel="icon" href="{% static 'images/logo.jpeg' %}" type="image/x-icon" />
 </head>
 
 
@@ -20,8 +22,26 @@
     <nav class="navbar background h-nav-resp">
         <div class="leftnav v-class-resp" id="leftnav">
 
-            <a href="{% url 'home' %}"><div class="logo"> <img src="{% static '/images/logo.jpeg' %}" alt="logo"></div></a>
-            <input type="text" name="search" id="search" class="search">
+            <a href="{% url 'home' %}">
+                <div class="logo"> <img src="{% static '/images/logo.jpeg' %}" alt="logo"></div>
+            </a>
+
+            <div class="search-bar-div">
+                <input type="text" name="search" id="searchInput" class="search"
+                    placeholder="Search for recipes or chefs (min 3 letters)" minlength="3">
+                <div id="suggestion-div" class="suggestion-div">
+                    <h1 style=" text-align: left;">Recipe</h1>
+                    <div class="searching-result" id="recipeResults">
+
+                    </div>
+                    <h1 style=" text-align: left;">Chefs</h1>
+                    <div class="searching-result" id="chefResults">
+
+                    </div>
+
+
+                </div>
+            </div>
 
         </div>
         <b>
@@ -91,6 +111,73 @@
 
     </nav>
 
+
+
+    <script>
+
+        $(document).ready(function () {
+            $('#searchInput').on('input', function () {
+                var query = $(this).val().trim();
+                if (query.length > 3) {
+
+                    $('#suggestion-div').css('display', 'flex');
+
+                    $.ajax({
+                        url: '/get-suggestions/',
+                        data: { 'query': query },
+                        dataType: 'json',
+                        success: function (data) {
+                            // Clear previous results
+                            $('#recipeResults').empty();
+                            $('#chefResults').empty();
+
+                            // Append recipe suggestions
+                            if (data.recipes && data.recipes.length > 0) {
+                                data.recipes.forEach(function (recipe) {
+                                
+
+                                    $('#recipeResults').append(
+                                        '<a href="/recipe/' + recipe.recipe_id + '" class="search-element">' +
+                                        '<img  src="{{ MEDIA_URL }}media/recipe_images/default_recipe_image.jpg"  style="border-radius:inherit; width: 9%;" />' +
+                                        '<h4 style="text-align: left; text-overflow: ellipsis; padding-left: 12px; width: 90%;">' + recipe.title + '</h4>' +
+                                        '</a>'
+                                    );
+                                });
+                            }
+                            else {
+                                $('#recipeResults').append('<h3> No Recipe from this name </h3>');
+                            }
+                            // Append chef suggestions
+                            if (data.chefs && data.chefs.length > 0) {
+                                data.chefs.forEach(function (chef) {
+                                    $('#chefResults').append(
+                                        '<a href="chefs_profile/' + chef.username + '" class="search-element">' +
+                                        '<img src="{{ MEDIA_URL }}media/chefs_images/a7b4c7bd-c3c8-4104-b146-5d11083c4c27.png" style="border-radius:inherit; width: 9%;" />' +
+                                        '<h4 style="text-align: left; text-overflow: ellipsis;padding-left: 12px;width: 90%;">' + chef.name + '</h4>' +
+                                        '</a>'
+                                    );
+                                });
+                            }
+                            else {
+                                $('#chefResults').append('<h3> No Chef from this name </h3>');
+                            }
+                        }
+                    });
+                } else {
+                    // Clear results if query length is less than or equal to 3
+                    $('#recipeResults').empty();
+                    $('#chefResults').empty();
+                    $('#suggestion-div').css('display', 'none');
+
+                }
+            });
+        });
+
+
+    </script>
+
+
+
     {% if messages %}
     {% for message in messages %}
     {% if message.tags %}
@@ -99,96 +186,6 @@
     {% endfor %}
 
     {% endif %}
-
-
-
-    <script>
-
-        function toggleTheme() {
-            var body = document.body;
-            body.classList.toggle('dark-mode');
-
-            // Store the current theme mode preference in a cookie
-            var themeMode = body.classList.contains('dark-mode') ? 'dark' : 'light';
-            document.cookie = "theme_mode=" + themeMode + ";path=/";
-
-            var themeIcon = document.getElementById('toggleicon');
-            if (themeMode === 'dark') {
-                themeIcon.classList.remove('fa-moon-o');
-                themeIcon.classList.add('fa-sun-o');
-            } else {
-                themeIcon.classList.remove('fa-sun-o');
-                themeIcon.classList.add('fa-moon-o');
-            }
-
-
-        }
-
-        // JavaScript code to apply theme mode
-        document.addEventListener("DOMContentLoaded", function () {
-            // Retrieve user's preferred theme mode from cookie, default to 'light' if not set
-            var themeMode = document.cookie.replace(/(?:(?:^|.*;\s*)theme_mode\s*=\s*([^;]*).*$)|^.*$/, "$1") || 'light';
-
-            // Apply appropriate theme mode styles
-            if (themeMode === 'dark') {
-                document.body.classList.add('dark-mode');  // Apply dark mode styles
-            }
-
-
-            var themeIcon = document.getElementById('toggleicon');
-            if (themeMode === 'dark') {
-                themeIcon.classList.remove('fa-moon-o');
-                themeIcon.classList.add('fa-sun-o');
-            } else {
-                themeIcon.classList.remove('fa-sun-o');
-                themeIcon.classList.add('fa-moon-o');
-
-            }
-        });
-
-        function openForm() {
-            document.getElementById("myForm").style.display = "block";
-        }
-
-        function closeForm() {
-            document.getElementById("myForm").style.display = "none";
-        }
-
-
-
-        function logoutbar() {
-            let logout = document.getElementById("logout-bar");
-            if (logout.style.display === "block") {
-                logout.style.display = "none";
-            } else {
-                logout.style.display = "block";
-            }
-        }
-
-        function displaynev() {
-            let navlst = document.getElementById("nav-list-div");
-            let navbutton = document.getElementById("navbutton");
-            let navlstDisplay = window.getComputedStyle(navlst).display;
-
-            if (navlstDisplay === "none") {
-                navlst.style.display = "block"; // Show the nav list
-                navbutton.style.display = "none"; // Hide the nav button
-            } else {
-                navlst.style.display = "none"; // Hide the nav list
-                navbutton.style.display = "flex"; // Show the nav button
-            }
-        }
-
-
-
-
-
-
-
-
-
-    </script>
-
 
 
     {% block body %} {% endblock body %}

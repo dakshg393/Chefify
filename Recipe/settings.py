@@ -14,6 +14,9 @@ import os
 from pathlib import Path
 from pickle import FALSE
 import pymongo
+from dotenv import load_dotenv
+load_dotenv()
+
 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -24,12 +27,11 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-zrwghj*@kx-d9b7u0l^(ok2t!4#!uq_h2_mbjimok0@hp+ne&d'
-
+SECRET_KEY = os.getenv('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS =["*"]
 
 
 # Application definition
@@ -90,17 +92,6 @@ DATABASES = {
 
 
 
-# DATABASES = {
-#         'default': {
-#             'ENGINE': 'djongo',
-#             'NAME': 'RecipeManagementSystem',
-#             'CLIENT': {
-#                 'host': 'mongodb+srv://dakshg393:Ashu1234@cluster0.2rgcrft.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0',
-#                 'username': 'dakshg393',
-#                 'password':'Ashu1234',
-#             }  
-#         }
-# }
 
 
 

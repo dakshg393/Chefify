@@ -2,9 +2,17 @@
 
 {% block body %}
 {% load static %}
-<div style="height: 70vh;">
+<div >
 <div class="container">
-    <h2>Login</h2>
+    <div id="democontainer" style="text-align: center; opacity: 0.9;background-color: #c5c1fc;color: black;">
+        <h3 style="color: black;">Demo Account</h3>
+        <p>You can use the following credentials to log in without registering:</p>
+        <p><strong>Username:</strong> <span style="text-transform: lowercase;color: black;">user1 </span></p>
+        <p><strong>Password:</strong><span style="text-transform: lowercase;color: black;"> user1</span></p>
+
+    </div>
+
+    <h2 style="text-align: center;">Login</h2>
     <form method="post" action="{% url 'signin' %}" enctype="multipart/form-data">
         {% csrf_token %} <!-- Include CSRF token for form submission -->
 
@@ -17,8 +25,12 @@
         <input type="submit" value="Login">
     </form>
     <div class="oauth-buttons">
+
         <p>Or Login with:</p>
-        <a href="#"><img src="{% static 'images/google.png' %}" alt="Login with Google"></a> <!-- Link to your Google image -->
+        <a href="#"><img src="{% static 'images/google.png' %}" alt="Login with Google"></a> 
+        
+        <!-- Link to your Google image -->
+        
     </div>
 </div>
 </div>

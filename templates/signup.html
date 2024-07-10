@@ -2,7 +2,7 @@
 
 
 {% block body %}
-
+<div class="signupformmain">
 <form class="signup-form" method="post" action="{% url 'signup' %}" enctype="multipart/form-data">
     {% csrf_token %}
     <h1>Sign Up</h1>
@@ -30,5 +30,6 @@
     </div>
     <button type="submit">Sign Up</button>
 </form>
+</div>
 
 {% endblock body %}

@@ -9,7 +9,7 @@
 <div class="chefs-profile">
   <div class="chefs-main-box">
     <div class=chefs-profile-img-box>
-      <img src="{{ chefdetails.chef_image.url }}" style=" width:80%; height:80% ;   border-radius: 10%;">
+      <img src="{{ chefdetails.chef_image.url }}" style=" width:90%; height:90% ;   border-radius: 50%;">
     </div>
     <div class=chefs-detail-box>
       <h2 style="text-transform: capitalize;">{{ chefdetails.name }}</h2>
@@ -74,8 +74,11 @@
 
 
 <div class="recipe-page">
+
+
+
   <div class="filternavbar">
-    <a href="#" onclick="displayFilterForm()">
+    <a onclick="displayFilterForm()">
       <h1>Filter By <i class="fas fa-angle-down" style="font-size:24px"></i></h1>
     </a>
     <div class="filterform" id="filterform">
@@ -156,19 +159,33 @@
           <div class="img-container"
             style="background-image: url('{{ MEDIA_URL }}{{ item.recipe.recipe_image.url }}');">
             {% if item.is_favorited %}
-            <button class="addto-favorite-button" style="background-color: #ff002d;"
-              onclick="event.stopPropagation(); location.href='{% url 'add_favorite' item.recipe.pk %}'; return false;">&hearts;</button>
+            <button class="addto-favorite-button" style="background-color: #ff5900;"
+              onclick="toggleFavorite(event,'{{item.recipe.pk}}'); return false;">&hearts;</button>
             {% else %}
             <button class="addto-favorite-button" style="background-color: #ffffff; color: black;"
-              onclick="event.stopPropagation(); location.href='{% url 'add_favorite' item.recipe.pk %}'; return false;">&hearts;</button>
+              onclick="toggleFavorite(event , '{{item.recipe.pk}}'); return false;">&hearts;</button>
             {% endif %}
+
+            {% if user == item.recipe.user %}
+            <button class="addto-favorite-button" style="background-color: #ffffff; color: black;"
+              onclick="removeRecipe(event , '{{item.recipe.pk}}'); return false;"> <i class='fas fa-trash-alt'></i>
+            </button>
+
+            {% endif %}
+
           </div>
           <div class="title-container">
             <h3><b>{{ item.recipe.title }}</b></h3><br>
-            {% if item.average_rating != 0 %}
-            <div class="ratingdiv">{{ item.average_rating|floatformat:2 }} <i class="fa fa-star"
-                style="color: #FFD43B;"></i>/5</div>
-            {% endif %}
+            <div class="ratingdiv">
+              {% if item.average_rating != 0 %}
+              {{ item.average_rating|floatformat:2 }}
+              <i class="fa fa-star" style="color: #FFD43B;"></i>/5
+              {% else %}
+
+                No Rating
+
+              {% endif %}
+            </div>
           </div>
           <!-- <div class="chefname-container">By:<i> {{ item.recipe.user }}</i></div> -->
         </a>
@@ -213,17 +230,71 @@
 </div>
 
 <script>
-  function toggleRatingForm() {
 
-    document.getElementById('star-rating').style.display = "None";
-    document.getElementById('rating-form').style.display = 'Block';
+  function toggleFavorite(event, recipeid) {
+    event.stopPropagation();
+
+    $.ajax({
+      url: '/add_favorite/' + recipeid + '/',
+      type: "POST",
+      data: { csrfmiddlewaretoken: '{{csrf_token}}' },
+
+      success: function (response) {
+        if (response.status === 'success') {
+          let button = $(event.target);
+
+          if (response.is_favorited) {
+            button.css('background-color', '#ff5900');
+            button.css('color', '#ffffff');
+          }
+          else {
+            button.css('background-color', '#ffffff');
+            button.css('color', 'black');
+          }
+
+        }
+
+        else {
+          alert("Somthing went Wrong .Please Try Again Later")
+        }
+
+      }
+
+
+    });
+
   }
 
-  function displayFilterForm() {
 
-    let filterform = document.getElementById("filterform");
-    filterform.style.display = filterform.style.display === "none" ? "block" : "none";
+
+  // to remove recipe 
+
+  function removeRecipe(event, recipeid) {
+
+    event.stopPropagation();
+
+    $.ajax({
+      url: '/removeRecipe/' + recipeid + '/',
+      type: "POST",
+      data: { csrfmiddlewaretoken: '{{csrf_token}}' },
+
+      success: function (response) {
+        if (response.status === 'success') {
+          $(event.target).closest('.recipebox').remove()
+        }
+
+        else {
+          alert("Somthing Went Wrong ")
+        }
+      }
+
+
+    });
+
   }
+
+
+
 
 </script>
 
