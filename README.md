@@ -1,5 +1,2 @@
-# Recipe-Sharing-Plateform
-# Recipe-Sharing-Plateform
-# Recipe-Sharing-Plateform
-# Recipe-Sharing-Plateform
-# Recipe-Management-System
+in env file the secreate key 
+in
