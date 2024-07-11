@@ -1,8 +1,6 @@
-import email
-from email import message
+
 from traceback import print_tb
 from unicodedata import category
-from warnings import catch_warnings
 from django.shortcuts import render,HttpResponse, redirect, get_object_or_404
 from django.contrib.auth import authenticate,login,logout
 from django.contrib import messages
@@ -15,7 +13,6 @@ from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.core.exceptions import ObjectDoesNotExist
 from django.http import JsonResponse
 from django.db.models import Avg,Q
-from faker import Faker
 
 
 def index(request):
@@ -603,30 +600,6 @@ def get_suggestions(request):
 
 
 
-
-
-
-
-
-
-def fakedate(n):
-        for i in range(n):
-        
-
-            fake = Faker("en_IN")
-            username1=fake.first_name()
-            email1=fake.email()
-
-            user= User.objects.create(
-                first_name = username1,
-                last_name =fake.last_name(),
-                username = username1,
-                email =email1,
-            )
-
-            user.set_password("123456")
-
-            user.save()
 
 
 
