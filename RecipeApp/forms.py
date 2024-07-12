@@ -1,4 +1,4 @@
-from attr import fields
+
 from django import forms
 from .models import ChefRating, Recipe,RecipeDetails,RecipeSteps,RecipeRating,Chefsprofile,ChefRating
 
